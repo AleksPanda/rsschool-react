@@ -1,5 +1,6 @@
 export interface AppState {
   searchInput: string;
+  characters: Character[];
 }
 
 export interface CharacterLocation {

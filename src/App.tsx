@@ -1,14 +1,22 @@
 import { Component, type JSX } from 'react';
 import SearchPanel from './components/SearchPanel';
 import CharacterList from './components/CharacterList';
+import { fetchCharacters } from './api/character-service';
 import type { AppState } from './types';
 
 const initialState: AppState = {
   searchInput: '',
+  characters: [],
 };
 
 class App extends Component<object, AppState> {
   state: AppState = initialState;
+
+  async componentDidMount(): Promise<void> {
+    const data = await fetchCharacters();
+
+    this.setState({ characters: data.results });
+  }
 
   handleSearchInputChange = (value: string): void => {
     this.setState({ searchInput: value });
@@ -39,7 +47,10 @@ class App extends Component<object, AppState> {
         <section className="app__section app__section--results">
           <h2 className="app__section-title">Results</h2>
 
-          <CharacterList placeholder="Results will appear here." />
+          <CharacterList
+            characters={this.state.characters}
+            placeholder="Results will appear here."
+          />
         </section>
       </main>
     );

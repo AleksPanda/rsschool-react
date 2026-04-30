@@ -119,6 +119,47 @@ input {
   text-align: center;
 }
 
+.character-list {
+  display: grid;
+  gap: var(--space-md);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.character-list__item {
+  padding: var(--space-lg);
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--radius);
+}
+
+.character-list__name {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  column-gap: var(--space-md);
+  align-items: baseline;
+  margin: 0 0 var(--space-sm);
+  font-size: 20px;
+}
+
+.character-list__description {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  column-gap: var(--space-md);
+  align-items: baseline;
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.character-list__name--title,
+.character-list__description--title {
+  color: var(--color-text-muted);
+}
+
+.character-list__value {
+  min-width: 0;
+}
+
 @media (max-width: 640px) {
   .app {
     padding: var(--space-xl) var(--space-md);
