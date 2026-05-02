@@ -1,5 +1,6 @@
 export interface AppState {
   searchInput: string;
+  lastSearchTerm: string;
   characters: Character[];
 }
 

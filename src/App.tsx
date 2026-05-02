@@ -2,10 +2,14 @@ import { Component, type JSX } from 'react';
 import SearchPanel from './components/SearchPanel';
 import CharacterList from './components/CharacterList';
 import { fetchCharacters } from './api/character-service';
+import { getSavedSearchTerm, saveSearchTerm } from './utils/local-storage';
 import type { AppState } from './types';
 
+const savedSearchTerm = getSavedSearchTerm();
+
 const initialState: AppState = {
-  searchInput: '',
+  searchInput: savedSearchTerm,
+  lastSearchTerm: savedSearchTerm,
   characters: [],
 };
 
@@ -13,7 +17,7 @@ class App extends Component<object, AppState> {
   state: AppState = initialState;
 
   async componentDidMount(): Promise<void> {
-    const data = await fetchCharacters();
+    const data = await fetchCharacters(this.state.lastSearchTerm, 1);
 
     this.setState({ characters: data.results });
   }
@@ -23,9 +27,21 @@ class App extends Component<object, AppState> {
   };
 
   handleSearch = async (): Promise<void> => {
-    const data = await fetchCharacters(this.state.searchInput, 1);
+    const searchTerm = this.state.searchInput.trim();
 
-    this.setState({ characters: data.results });
+    if (searchTerm === this.state.lastSearchTerm) {
+      return;
+    }
+
+    saveSearchTerm(searchTerm);
+
+    const data = await fetchCharacters(searchTerm, 1);
+
+    this.setState({
+      searchInput: searchTerm,
+      lastSearchTerm: searchTerm,
+      characters: data.results,
+    });
   };
 
   render(): JSX.Element {
