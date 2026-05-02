@@ -1,4 +1,5 @@
 import { Component, type JSX } from 'react';
+import Header from './components/Header';
 import SearchPanel from './components/SearchPanel';
 import CharacterList from './components/CharacterList';
 import { fetchCharacters } from './api/character-service';
@@ -72,21 +73,11 @@ class App extends Component<object, AppState> {
 
     return (
       <main className="app">
-        <section className="app__section app__section--header">
-          <h1 className="app__title">Rick and Morty Character Search</h1>
-          <p className="app__subtitle">
-            Search for characters from the Rick and Morty API.
-          </p>
-          <button
-            className="app__test-error-button"
-            type="button"
-            onClick={this.triggerTestError}
-          >
-            Test error boundary
-          </button>
+        <section className="app__section">
+          <Header triggerTestError={this.triggerTestError} />
         </section>
 
-        <section className="app__section app__section--search">
+        <section className="app__section">
           <SearchPanel
             value={this.state.searchInput}
             onInputChange={this.handleSearchInputChange}
@@ -94,7 +85,7 @@ class App extends Component<object, AppState> {
           />
         </section>
 
-        <section className="app__section app__section--results">
+        <section className="app__section">
           <h2 className="app__section-title">Results</h2>
 
           <CharacterList
