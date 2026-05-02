@@ -32,6 +32,7 @@ class App extends Component<object, AppState> {
     const searchTerm = this.state.searchInput.trim();
 
     if (searchTerm === this.state.lastSearchTerm) {
+      this.setState({ searchInput: searchTerm });
       return;
     }
 

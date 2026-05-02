@@ -196,7 +196,6 @@ input {
   column-gap: var(--space-md);
   align-items: baseline;
   margin: 0;
-  /* color: var(--color-text-muted); */
 }
 
 .character-list__name--title,

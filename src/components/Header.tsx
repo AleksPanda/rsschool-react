@@ -6,7 +6,7 @@ interface HeaderProps {
 
 function Header({ triggerTestError }: HeaderProps): JSX.Element {
   return (
-    <section className="header-panel">
+    <div className="header-panel">
       <div className="header-panel__content">
         <h1 className="header-panel__title">Rick and Morty Character Search</h1>
         <p className="header-panel__subtitle">
@@ -20,8 +20,12 @@ function Header({ triggerTestError }: HeaderProps): JSX.Element {
           Test error boundary
         </button>
       </div>
-      <img className="header-panel__image" src="/rick-n-morty.png" />
-    </section>
+      <img
+        className="header-panel__image"
+        src="/rick-n-morty.png"
+        alt="Rick and Morty"
+      />
+    </div>
   );
 }
 
