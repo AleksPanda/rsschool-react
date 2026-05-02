@@ -4,6 +4,7 @@ export interface AppState {
   characters: Character[];
   isLoading: boolean;
   errorMessage: string;
+  hasTestError: boolean;
 }
 
 export interface CharacterLocation {

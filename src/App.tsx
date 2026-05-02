@@ -13,6 +13,7 @@ const initialState: AppState = {
   characters: [],
   isLoading: false,
   errorMessage: '',
+  hasTestError: false,
 };
 
 class App extends Component<object, AppState> {
@@ -60,7 +61,15 @@ class App extends Component<object, AppState> {
     }
   };
 
+  triggerTestError = (): void => {
+    this.setState({ hasTestError: true });
+  };
+
   render(): JSX.Element {
+    if (this.state.hasTestError) {
+      throw new Error('Test error boundary error');
+    }
+
     return (
       <main className="app">
         <section className="app__section app__section--header">
@@ -68,6 +77,13 @@ class App extends Component<object, AppState> {
           <p className="app__subtitle">
             Search for characters from the Rick and Morty API.
           </p>
+          <button
+            className="app__test-error-button"
+            type="button"
+            onClick={this.triggerTestError}
+          >
+            Test error boundary
+          </button>
         </section>
 
         <section className="app__section app__section--search">
