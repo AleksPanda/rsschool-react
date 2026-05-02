@@ -119,6 +119,10 @@ input {
   text-align: center;
 }
 
+.results-placeholder--error {
+  color: #ffb4b4;
+}
+
 .character-list {
   display: grid;
   gap: var(--space-md);
@@ -158,6 +162,24 @@ input {
 
 .character-list__value {
   min-width: 0;
+}
+
+.loading-dots {
+  display: inline-block;
+  width: 1.5em;
+  overflow: hidden;
+  vertical-align: bottom;
+  animation: loadingDots 1.2s steps(4, end) infinite;
+}
+
+@keyframes loadingDots {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 1.5em;
+  }
 }
 
 @media (max-width: 640px) {

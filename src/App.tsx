@@ -11,15 +11,15 @@ const initialState: AppState = {
   searchInput: savedSearchTerm,
   lastSearchTerm: savedSearchTerm,
   characters: [],
+  isLoading: false,
+  errorMessage: '',
 };
 
 class App extends Component<object, AppState> {
   state: AppState = initialState;
 
   async componentDidMount(): Promise<void> {
-    const data = await fetchCharacters(this.state.lastSearchTerm, 1);
-
-    this.setState({ characters: data.results });
+    await this.loadCharacters(this.state.lastSearchTerm);
   }
 
   handleSearchInputChange = (value: string): void => {
@@ -35,13 +35,29 @@ class App extends Component<object, AppState> {
 
     saveSearchTerm(searchTerm);
 
-    const data = await fetchCharacters(searchTerm, 1);
-
     this.setState({
       searchInput: searchTerm,
       lastSearchTerm: searchTerm,
-      characters: data.results,
     });
+
+    await this.loadCharacters(searchTerm);
+  };
+
+  loadCharacters = async (searchTerm: string): Promise<void> => {
+    this.setState({ isLoading: true, errorMessage: '' });
+
+    try {
+      const data = await fetchCharacters(searchTerm, 1);
+
+      this.setState({ characters: data.results });
+    } catch {
+      this.setState({
+        characters: [],
+        errorMessage: 'Unable to load characters. Please try again later.',
+      });
+    } finally {
+      this.setState({ isLoading: false });
+    }
   };
 
   render(): JSX.Element {
@@ -67,6 +83,8 @@ class App extends Component<object, AppState> {
 
           <CharacterList
             characters={this.state.characters}
+            errorMessage={this.state.errorMessage}
+            isLoading={this.state.isLoading}
             placeholder="Results will appear here."
           />
         </section>

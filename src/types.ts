@@ -2,6 +2,8 @@ export interface AppState {
   searchInput: string;
   lastSearchTerm: string;
   characters: Character[];
+  isLoading: boolean;
+  errorMessage: string;
 }
 
 export interface CharacterLocation {

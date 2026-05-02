@@ -3,13 +3,35 @@ import type { Character } from '../types';
 
 interface CharacterListProps {
   characters: Character[];
+  errorMessage: string;
+  isLoading: boolean;
   placeholder: string;
 }
 
 function CharacterList({
   characters,
+  errorMessage,
+  isLoading,
   placeholder,
 }: CharacterListProps): JSX.Element {
+  if (isLoading) {
+    return (
+      <div className="results-placeholder">
+        <p className="loading-text">
+          Loading<span className="loading-dots">...</span>
+        </p>
+      </div>
+    );
+  }
+
+  if (errorMessage) {
+    return (
+      <div className="results-placeholder results-placeholder--error">
+        <p>{errorMessage}</p>
+      </div>
+    );
+  }
+
   if (characters.length === 0) {
     return (
       <div className="results-placeholder">
