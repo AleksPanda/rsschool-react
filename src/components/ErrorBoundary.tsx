@@ -13,6 +13,10 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     hasError: false,
   };
 
+  private handleGoBack = (): void => {
+    window.location.reload();
+  };
+
   static getDerivedStateFromError(): ErrorBoundaryState {
     return { hasError: true };
   }
@@ -30,6 +34,13 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             <p className="app__subtitle">
               Please refresh the page and try again.
             </p>
+            <button
+              className="app__test-error-button"
+              type="button"
+              onClick={this.handleGoBack}
+            >
+              Refresh the page
+            </button>
           </section>
         </main>
       );
