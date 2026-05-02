@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { JSX, SyntheticEvent } from 'react';
 
 interface SearchPanelProps {
   value: string;
@@ -11,13 +11,18 @@ function SearchPanel({
   onInputChange,
   onSearch,
 }: SearchPanelProps): JSX.Element {
+  const handleSubmit = (event: SyntheticEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onSearch();
+  };
+
   return (
     <div className="search-panel">
       <label className="search-panel__label" htmlFor="character-search">
         Search characters
       </label>
 
-      <div className="search-panel__controls">
+      <form className="search-panel__controls" onSubmit={handleSubmit}>
         <input
           id="character-search"
           className="search-panel__input"
@@ -27,14 +32,10 @@ function SearchPanel({
           onChange={(event) => onInputChange(event.target.value)}
         />
 
-        <button
-          className="search-panel__button"
-          type="button"
-          onClick={onSearch}
-        >
+        <button className="search-panel__button" type="submit">
           Search
         </button>
-      </div>
+      </form>
     </div>
   );
 }
