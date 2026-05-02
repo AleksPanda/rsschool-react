@@ -22,8 +22,10 @@ class App extends Component<object, AppState> {
     this.setState({ searchInput: value });
   };
 
-  handleSearch = (): void => {
-    console.log('Search is not connected yet:', this.state.searchInput);
+  handleSearch = async (): Promise<void> => {
+    const data = await fetchCharacters(this.state.searchInput, 1);
+
+    this.setState({ characters: data.results });
   };
 
   render(): JSX.Element {
