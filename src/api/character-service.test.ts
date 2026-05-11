@@ -57,7 +57,6 @@ describe('fetchCharacters', () => {
     await fetchCharacters('', 3);
     expect(fetch).toHaveBeenCalledTimes(1);
 
-    // const url = vi.mocked(fetch).mock.calls[0][0] as URL;
     const firstFetchCall = vi.mocked(fetch).mock.calls[0];
     const firstFetchArgument = firstFetchCall[0];
     const url = firstFetchArgument as URL;
