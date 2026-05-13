@@ -99,7 +99,7 @@ input {
 
 .header-panel__image {
   width: 180px;
-  height: 180px;
+  height: 140px;
   flex-shrink: 0;
   object-fit: contain;
 }
