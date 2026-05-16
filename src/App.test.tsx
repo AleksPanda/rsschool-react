@@ -3,12 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { CharacterResponse } from './types';
+import { SEARCH_TERM_KEY } from './utils/local-storage';
 
 vi.mock('./api/character-service', () => ({
   fetchCharacters: vi.fn(),
 }));
-
-const SEARCH_TERM_KEY = 'rick-and-morty-search-term';
 
 const mockResponse: CharacterResponse = {
   info: {

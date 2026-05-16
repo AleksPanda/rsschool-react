@@ -1,7 +1,9 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { getSavedSearchTerm, saveSearchTerm } from './local-storage';
-
-const SEARCH_TERM_KEY = 'rick-and-morty-search-term';
+import {
+  getSavedSearchTerm,
+  saveSearchTerm,
+  SEARCH_TERM_KEY,
+} from './local-storage';
 
 describe('local-storage', () => {
   afterEach(() => {

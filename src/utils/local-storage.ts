@@ -1,4 +1,4 @@
-const SEARCH_TERM_KEY = 'rick-and-morty-search-term';
+export const SEARCH_TERM_KEY = 'rick-and-morty-search-term';
 
 export function getSavedSearchTerm(): string {
   return localStorage.getItem(SEARCH_TERM_KEY) ?? '';

@@ -1,104 +1,106 @@
-import { Component, type JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 import Header from './components/Header';
 import SearchPanel from './components/SearchPanel';
 import CharacterList from './components/CharacterList';
 import { fetchCharacters } from './api/character-service';
-import { getSavedSearchTerm, saveSearchTerm } from './utils/local-storage';
-import type { AppState } from './types';
+import { useLocalStorage } from './hooks/use-local-storage';
+import { SEARCH_TERM_KEY } from './utils/local-storage';
+import type { Character } from './types';
 
-const savedSearchTerm = getSavedSearchTerm();
+function App(): JSX.Element {
+  const [lastSearchTerm, saveSearchTerm] = useLocalStorage(SEARCH_TERM_KEY, '');
 
-const initialState: AppState = {
-  searchInput: savedSearchTerm,
-  lastSearchTerm: savedSearchTerm,
-  characters: [],
-  isLoading: false,
-  errorMessage: '',
-  hasTestError: false,
-};
+  const [searchInput, setSearchInput] = useState(lastSearchTerm);
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [hasTestError, setHasTestError] = useState(false);
 
-class App extends Component<object, AppState> {
-  state: AppState = initialState;
+  useEffect(() => {
+    let isActive = true;
 
-  async componentDidMount(): Promise<void> {
-    await this.loadCharacters(this.state.lastSearchTerm);
-  }
+    async function loadCharacters(): Promise<void> {
+      try {
+        const data = await fetchCharacters(lastSearchTerm, 1);
 
-  handleSearchInputChange = (value: string): void => {
-    this.setState({ searchInput: value });
+        if (!isActive) {
+          return;
+        }
+
+        setCharacters(data.results);
+      } catch {
+        if (!isActive) {
+          return;
+        }
+
+        setCharacters([]);
+        setErrorMessage('Unable to load characters. Please try again later.');
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadCharacters();
+
+    return () => {
+      isActive = false;
+    };
+  }, [lastSearchTerm]);
+
+  const handleSearchInputChange = (value: string): void => {
+    setSearchInput(value);
   };
 
-  handleSearch = async (): Promise<void> => {
-    const searchTerm = this.state.searchInput.trim();
+  const handleSearch = (): void => {
+    const searchTerm = searchInput.trim();
 
-    if (searchTerm === this.state.lastSearchTerm) {
-      this.setState({ searchInput: searchTerm });
+    if (searchTerm === lastSearchTerm) {
+      setSearchInput(searchTerm);
       return;
     }
 
+    setSearchInput(searchTerm);
+    setErrorMessage('');
+    setIsLoading(true);
     saveSearchTerm(searchTerm);
-
-    this.setState({
-      searchInput: searchTerm,
-      lastSearchTerm: searchTerm,
-    });
-
-    await this.loadCharacters(searchTerm);
   };
 
-  loadCharacters = async (searchTerm: string): Promise<void> => {
-    this.setState({ isLoading: true, errorMessage: '' });
-
-    try {
-      const data = await fetchCharacters(searchTerm, 1);
-
-      this.setState({ characters: data.results });
-    } catch {
-      this.setState({
-        characters: [],
-        errorMessage: 'Unable to load characters. Please try again later.',
-      });
-    } finally {
-      this.setState({ isLoading: false });
-    }
+  const triggerTestError = (): void => {
+    setHasTestError(true);
   };
 
-  triggerTestError = (): void => {
-    this.setState({ hasTestError: true });
-  };
-
-  render(): JSX.Element {
-    if (this.state.hasTestError) {
-      throw new Error('Test error boundary error');
-    }
-
-    return (
-      <main className="app">
-        <section className="app__section">
-          <Header triggerTestError={this.triggerTestError} />
-        </section>
-
-        <section className="app__section">
-          <SearchPanel
-            value={this.state.searchInput}
-            onInputChange={this.handleSearchInputChange}
-            onSearch={this.handleSearch}
-          />
-        </section>
-
-        <section className="app__section">
-          <h2 className="app__section-title">Results</h2>
-
-          <CharacterList
-            characters={this.state.characters}
-            errorMessage={this.state.errorMessage}
-            isLoading={this.state.isLoading}
-            placeholder="Results will appear here."
-          />
-        </section>
-      </main>
-    );
+  if (hasTestError) {
+    throw new Error('Test error boundary error');
   }
+
+  return (
+    <main className="app">
+      <section className="app__section">
+        <Header triggerTestError={triggerTestError} />
+      </section>
+
+      <section className="app__section">
+        <SearchPanel
+          value={searchInput}
+          onInputChange={handleSearchInputChange}
+          onSearch={handleSearch}
+        />
+      </section>
+
+      <section className="app__section">
+        <h2 className="app__section-title">Results</h2>
+
+        <CharacterList
+          characters={characters}
+          errorMessage={errorMessage}
+          isLoading={isLoading}
+          placeholder="Results will appear here."
+        />
+      </section>
+    </main>
+  );
 }
 
 export default App;
