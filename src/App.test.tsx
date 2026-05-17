@@ -53,7 +53,11 @@ describe('App localStorage integration', () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(fetchCharacters).toHaveBeenCalledWith('', 1);
+      expect(fetchCharacters).toHaveBeenCalledWith(
+        '',
+        1,
+        expect.any(AbortSignal)
+      );
     });
 
     expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
@@ -72,7 +76,11 @@ describe('App localStorage integration', () => {
     expect(screen.getByLabelText(/search characters/i)).toHaveValue('Rick');
 
     await waitFor(() => {
-      expect(fetchCharacters).toHaveBeenCalledWith('Rick', 1);
+      expect(fetchCharacters).toHaveBeenCalledWith(
+        'Rick',
+        1,
+        expect.any(AbortSignal)
+      );
     });
 
     expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();

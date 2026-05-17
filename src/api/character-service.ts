@@ -4,7 +4,8 @@ const API_URL = 'https://rickandmortyapi.com/api/character';
 
 export async function fetchCharacters(
   searchTerm = '',
-  page = 1
+  page = 1,
+  signal?: AbortSignal
 ): Promise<CharacterResponse> {
   const url = new URL(API_URL);
 
@@ -14,7 +15,7 @@ export async function fetchCharacters(
     url.searchParams.set('name', searchTerm);
   }
 
-  const response = await fetch(url);
+  const response = await fetch(url, { signal });
 
   if (!response.ok) {
     throw new Error(

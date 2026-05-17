@@ -40,26 +40,30 @@ function App(): JSX.Element {
   );
 
   useEffect(() => {
-    let isActive = true;
+    const controller = new AbortController();
 
     async function loadInitialCharacters(): Promise<void> {
       try {
-        const data = await fetchCharacters(savedSearchTerm, 1);
+        const data = await fetchCharacters(
+          savedSearchTerm,
+          1,
+          controller.signal
+        );
 
-        if (!isActive) {
+        if (controller.signal.aborted) {
           return;
         }
 
         setCharacters(data.results);
       } catch {
-        if (!isActive) {
+        if (controller.signal.aborted) {
           return;
         }
 
         setCharacters([]);
         setErrorMessage('Unable to load characters. Please try again later.');
       } finally {
-        if (isActive) {
+        if (!controller.signal.aborted) {
           setIsLoading(false);
         }
       }
@@ -68,7 +72,7 @@ function App(): JSX.Element {
     void loadInitialCharacters();
 
     return () => {
-      isActive = false;
+      controller.abort();
     };
   }, [savedSearchTerm]);
 

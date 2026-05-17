@@ -78,6 +78,21 @@ describe('fetchCharacters', () => {
     expect(url.searchParams.get('name')).toBe('Morty');
   });
 
+  it('passes abort signal to fetch', async () => {
+    const controller = new AbortController();
+
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(characterResponse),
+    } as Response);
+
+    await fetchCharacters('', 1, controller.signal);
+
+    expect(fetch).toHaveBeenCalledWith(expect.any(URL), {
+      signal: controller.signal,
+    });
+  });
+
   it.each([404, 500])(
     'throws an error for failed %s responses',
     async (status) => {
