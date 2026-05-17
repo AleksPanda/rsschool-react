@@ -1,4 +1,4 @@
-import { useEffect, useState, type JSX } from 'react';
+import { useCallback, useEffect, useState, type JSX } from 'react';
 import Header from './components/Header';
 import SearchPanel from './components/SearchPanel';
 import CharacterList from './components/CharacterList';
@@ -8,20 +8,43 @@ import { SEARCH_TERM_KEY } from './utils/local-storage';
 import type { Character } from './types';
 
 function App(): JSX.Element {
-  const [lastSearchTerm, saveSearchTerm] = useLocalStorage(SEARCH_TERM_KEY, '');
+  const [savedSearchTerm, saveSearchTerm] = useLocalStorage(
+    SEARCH_TERM_KEY,
+    ''
+  );
 
-  const [searchInput, setSearchInput] = useState(lastSearchTerm);
+  const [searchInput, setSearchInput] = useState(savedSearchTerm);
+  const [lastSearchTerm, setLastSearchTerm] = useState(savedSearchTerm);
   const [characters, setCharacters] = useState<Character[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [hasTestError, setHasTestError] = useState(false);
 
+  const loadCharacters = useCallback(
+    async (searchTerm: string, page = 1): Promise<void> => {
+      setIsLoading(true);
+      setErrorMessage('');
+
+      try {
+        const data = await fetchCharacters(searchTerm, page);
+
+        setCharacters(data.results);
+      } catch {
+        setCharacters([]);
+        setErrorMessage('Unable to load characters. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     let isActive = true;
 
-    async function loadCharacters(): Promise<void> {
+    async function loadInitialCharacters(): Promise<void> {
       try {
-        const data = await fetchCharacters(lastSearchTerm, 1);
+        const data = await fetchCharacters(savedSearchTerm, 1);
 
         if (!isActive) {
           return;
@@ -42,18 +65,18 @@ function App(): JSX.Element {
       }
     }
 
-    void loadCharacters();
+    void loadInitialCharacters();
 
     return () => {
       isActive = false;
     };
-  }, [lastSearchTerm]);
+  }, [savedSearchTerm]);
 
   const handleSearchInputChange = (value: string): void => {
     setSearchInput(value);
   };
 
-  const handleSearch = (): void => {
+  const handleSearch = async (): Promise<void> => {
     const searchTerm = searchInput.trim();
 
     if (searchTerm === lastSearchTerm) {
@@ -61,10 +84,11 @@ function App(): JSX.Element {
       return;
     }
 
-    setSearchInput(searchTerm);
-    setErrorMessage('');
-    setIsLoading(true);
     saveSearchTerm(searchTerm);
+    setSearchInput(searchTerm);
+    setLastSearchTerm(searchTerm);
+
+    await loadCharacters(searchTerm);
   };
 
   const triggerTestError = (): void => {
