@@ -1,4 +1,4 @@
-import type { CharacterResponse } from '../types';
+import type { Character, CharacterResponse } from '../types';
 
 const API_URL = 'https://rickandmortyapi.com/api/character';
 
@@ -24,4 +24,19 @@ export async function fetchCharacters(
   }
 
   return response.json() as Promise<CharacterResponse>;
+}
+
+export async function fetchCharacterById(
+  characterId: string,
+  signal?: AbortSignal
+): Promise<Character> {
+  const response = await fetch(`${API_URL}/${characterId}`, { signal });
+
+  if (!response.ok) {
+    throw new Error(
+      `Unable to load character details. Please try again later. Status: ${response.status}`
+    );
+  }
+
+  return response.json() as Promise<Character>;
 }

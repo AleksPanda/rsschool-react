@@ -6,7 +6,7 @@ import { fetchCharacters } from '../api/character-service';
 import Header from '../components/Header';
 import SearchPanel from '../components/SearchPanel';
 import CharacterList from '../components/CharacterList';
-import { useSearchParams } from 'react-router-dom';
+import { useOutlet, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   createCharacterSearchParams,
   getPageFromSearchParams,
@@ -14,6 +14,7 @@ import {
 import Pagination from '../components/Pagination';
 
 function CharactersPage(): JSX.Element {
+  const navigate = useNavigate();
   const [savedSearchTerm, saveSearchTerm] = useLocalStorage(
     SEARCH_TERM_KEY,
     ''
@@ -34,6 +35,9 @@ function CharactersPage(): JSX.Element {
   const [loadedRequestKey, setLoadedRequestKey] = useState('');
   const isLoading = loadedRequestKey !== currentRequestKey;
   const visibleErrorMessage = isLoading ? '' : errorMessage;
+
+  const detailsOutlet = useOutlet();
+  const hasDetails = Boolean(detailsOutlet);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -96,7 +100,12 @@ function CharactersPage(): JSX.Element {
     saveSearchTerm(searchTerm);
     setSearchInput(searchTerm);
 
-    setSearchParams(createCharacterSearchParams(1, searchTerm));
+    const params = createCharacterSearchParams(1, searchTerm);
+
+    navigate({
+      pathname: '/',
+      search: `?${params.toString()}`,
+    });
   };
 
   const handleSearchInputChange = (value: string): void => {
@@ -133,21 +142,40 @@ function CharactersPage(): JSX.Element {
 
       <section className="app__section">
         <h2 className="app__section-title">Results</h2>
+        <div
+          className={
+            hasDetails
+              ? 'results-layout results-layout--with-details'
+              : 'results-layout'
+          }
+        >
+          <div className="results-layout__list">
+            <CharacterList
+              characters={characters}
+              errorMessage={visibleErrorMessage}
+              isLoading={isLoading}
+              placeholder="Results will appear here."
+              getDetailsPath={(characterId) => {
+                const queryString = searchParams.toString();
 
-        <CharacterList
-          characters={characters}
-          errorMessage={visibleErrorMessage}
-          isLoading={isLoading}
-          placeholder="Results will appear here."
-        />
+                return queryString
+                  ? `/details/${characterId}?${queryString}`
+                  : `/details/${characterId}`;
+              }}
+            />
 
-        {!isLoading && !visibleErrorMessage && characters.length > 0 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        )}
+            {!isLoading && !visibleErrorMessage && characters.length > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </div>
+          {hasDetails && (
+            <aside className="results-layout__details">{detailsOutlet}</aside>
+          )}
+        </div>
       </section>
     </>
   );
