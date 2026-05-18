@@ -131,7 +131,11 @@ describe('App localStorage integration', () => {
     expect(localStorage.getItem(SEARCH_TERM_KEY)).toBe('Morty');
 
     await waitFor(() => {
-      expect(fetchCharacters).toHaveBeenLastCalledWith('Morty', 1);
+      expect(fetchCharacters).toHaveBeenLastCalledWith(
+        'Morty',
+        1,
+        expect.any(AbortSignal)
+      );
     });
   });
 
@@ -150,11 +154,15 @@ describe('App localStorage integration', () => {
     const input = screen.getByLabelText(/search characters/i);
 
     await user.clear(input);
-    await user.type(input, '  Morty  ');
+    await user.type(input, '   Morty   ');
     await user.click(screen.getByRole('button', { name: /search/i }));
 
     await waitFor(() => {
-      expect(fetchCharacters).toHaveBeenLastCalledWith('Morty', 1);
+      expect(fetchCharacters).toHaveBeenLastCalledWith(
+        'Morty',
+        1,
+        expect.any(AbortSignal)
+      );
     });
 
     expect(input).toHaveValue('Morty');
