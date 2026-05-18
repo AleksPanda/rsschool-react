@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import PagePanel from './PagePanel';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -29,29 +30,20 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     if (this.state.hasError) {
       return (
         <main className="app">
-          <section className="app__section error-boundary">
-            <div className="header-panel">
-              <div className="header-panel__content">
-                <h1 className="header-panel__title">Something went wrong</h1>
-                <p className="header-panel__subtitle">
-                  Please refresh the page and try again.
-                </p>
-                <button
-                  className="header-panel__test-error-button"
-                  type="button"
-                  onClick={this.handleGoBack}
-                >
-                  Refresh the page
-                </button>
-              </div>
-
-              <img
-                className="header-panel__image"
-                src="/rick-cucumber.png"
-                alt="Rick and Morty"
-              />
-            </div>
-          </section>
+          <PagePanel
+            title="Something went wrong"
+            description="Please refresh the page and try again."
+            imageSrc="/rick-cucumber.png"
+            actions={
+              <button
+                className="header-panel__test-error-button"
+                type="button"
+                onClick={this.handleGoBack}
+              >
+                Refresh the page
+              </button>
+            }
+          />
         </main>
       );
     }

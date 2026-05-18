@@ -1,5 +1,6 @@
 import type { JSX } from 'react';
 import { Link } from 'react-router-dom';
+import PagePanel from './PagePanel';
 
 interface HeaderProps {
   triggerTestError: () => void;
@@ -7,13 +8,12 @@ interface HeaderProps {
 
 function Header({ triggerTestError }: HeaderProps): JSX.Element {
   return (
-    <div className="header-panel">
-      <div className="header-panel__content">
-        <h1 className="header-panel__title">Rick and Morty Character Search</h1>
-        <p className="header-panel__subtitle">
-          Search for characters from the Rick and Morty API.
-        </p>
-        <div className="header-panel__buttons-container">
+    <PagePanel
+      title="Rick and Morty Character Search"
+      description="Search for characters from the Rick and Morty API."
+      imageSrc="/rick-n-morty.png"
+      actions={
+        <>
           <Link className="header-panel__test-error-button" to="/about">
             About
           </Link>
@@ -24,14 +24,9 @@ function Header({ triggerTestError }: HeaderProps): JSX.Element {
           >
             Test error boundary
           </button>
-        </div>
-      </div>
-      <img
-        className="header-panel__image"
-        src="/rick-n-morty.png"
-        alt="Rick and Morty"
-      />
-    </div>
+        </>
+      }
+    />
   );
 }
 

@@ -105,9 +105,7 @@ function SearchPage(): JSX.Element {
 
   return (
     <>
-      <section className="app__section">
-        <Header triggerTestError={triggerTestError} />
-      </section>
+      <Header triggerTestError={triggerTestError} />
 
       <section className="app__section">
         <SearchPanel
