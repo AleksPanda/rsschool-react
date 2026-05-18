@@ -112,6 +112,13 @@ function CharacterDetails(): JSX.Element {
               <dd>{character.species}</dd>
             </div>
 
+            {character.type && (
+              <div className="details-panel__row">
+                <dt>Type</dt>
+                <dd>{character.type}</dd>
+              </div>
+            )}
+
             <div className="details-panel__row">
               <dt>Gender</dt>
               <dd>{character.gender}</dd>
@@ -126,6 +133,16 @@ function CharacterDetails(): JSX.Element {
               <dt>Location</dt>
               <dd>{character.location.name}</dd>
             </div>
+
+            {character.episode && (
+              <div className="details-panel__row">
+                <dt>Episodes</dt>
+                <dd>
+                  {character.episode.length}{' '}
+                  {character.episode.length === 1 ? 'episode' : 'episodes'}
+                </dd>
+              </div>
+            )}
           </dl>
         </>
       )}
