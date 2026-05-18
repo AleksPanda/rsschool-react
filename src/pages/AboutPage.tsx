@@ -1,25 +1,42 @@
 import type { JSX } from 'react';
+import { Link } from 'react-router-dom';
 
 function AboutPage(): JSX.Element {
   return (
-    <section className="app__section">
+    <section className="app__section about-page">
       <h2 className="app__section-title">About</h2>
 
-      <p>
-        This application was created as part of The Rolling Scopes School React
-        course.
-      </p>
+      <div className="about-page__content">
+        <p className="about-page__text">
+          This application was created as part of{' '}
+          <a
+            className="app-link"
+            href="https://rs.school/courses/reactjs"
+            target="_blank"
+            rel="noreferrer"
+          >
+            The Rolling Scopes School React course
+          </a>
+          .
+        </p>
 
-      <p>Author: Aleksandra Potapova</p>
+        <p className="about-page__text">
+          Author:{' '}
+          <a
+            className="app-link"
+            href="https://github.com/AleksPanda"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Aleksandra Potapova on GitHub
+          </a>
+          .
+        </p>
+      </div>
 
-      <a
-        className="app-link"
-        href="https://rs.school/courses/reactjs"
-        target="_blank"
-        rel="noreferrer"
-      >
-        RS School React course
-      </a>
+      <Link className="app__test-error-button about-page__return-link" to="/">
+        Return to the main page
+      </Link>
     </section>
   );
 }

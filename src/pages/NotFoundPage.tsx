@@ -8,7 +8,7 @@ function NotFoundPage(): JSX.Element {
 
       <p>The page you are looking for does not exist.</p>
 
-      <Link className="app-link" to="/">
+      <Link className="header-panel__test-error-button" to="/">
         Return to the main page
       </Link>
     </section>

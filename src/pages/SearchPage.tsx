@@ -104,7 +104,7 @@ function SearchPage(): JSX.Element {
   }
 
   return (
-    <main className="app">
+    <>
       <section className="app__section">
         <Header triggerTestError={triggerTestError} />
       </section>
@@ -127,7 +127,7 @@ function SearchPage(): JSX.Element {
           placeholder="Results will appear here."
         />
       </section>
-    </main>
+    </>
   );
 }
 
