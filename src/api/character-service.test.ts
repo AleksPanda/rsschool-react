@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { fetchCharacters } from './character-service';
+import { fetchCharacterById, fetchCharacters } from './character-service';
 
 const characterResponse = {
   info: {
@@ -28,6 +28,8 @@ const characterResponse = {
     },
   ],
 };
+
+const character = characterResponse.results[0];
 
 describe('fetchCharacters', () => {
   beforeEach(() => {
@@ -78,6 +80,21 @@ describe('fetchCharacters', () => {
     expect(url.searchParams.get('name')).toBe('Morty');
   });
 
+  it('passes abort signal to fetch', async () => {
+    const controller = new AbortController();
+
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(characterResponse),
+    } as Response);
+
+    await fetchCharacters('', 1, controller.signal);
+
+    expect(fetch).toHaveBeenCalledWith(expect.any(URL), {
+      signal: controller.signal,
+    });
+  });
+
   it.each([404, 500])(
     'throws an error for failed %s responses',
     async (status) => {
@@ -92,4 +109,46 @@ describe('fetchCharacters', () => {
       );
     }
   );
+});
+
+describe('fetchCharacterById', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('returns successful character details data', async () => {
+    const controller = new AbortController();
+
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(character),
+    } as Response);
+
+    const result = await fetchCharacterById('1', controller.signal);
+
+    expect(result).toEqual(character);
+    expect(fetch).toHaveBeenCalledWith(
+      'https://rickandmortyapi.com/api/character/1',
+      {
+        signal: controller.signal,
+      }
+    );
+  });
+
+  it('throws an error when character details request fails', async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: false,
+      status: 404,
+    } as Response);
+
+    const result = fetchCharacterById('1');
+
+    await expect(result).rejects.toThrow(
+      'Unable to load character details. Please try again later. Status: 404'
+    );
+  });
 });

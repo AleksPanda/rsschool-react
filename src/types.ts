@@ -22,6 +22,7 @@ export interface Character {
   origin: CharacterLocation;
   location: CharacterLocation;
   image: string;
+  episode?: string[];
 }
 
 export interface CharacterResponse {
