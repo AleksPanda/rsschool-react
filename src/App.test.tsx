@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 
 import type { CharacterResponse } from './types';
 import { SEARCH_TERM_KEY } from './utils/local-storage';
@@ -37,6 +38,14 @@ const mockResponse: CharacterResponse = {
   ],
 };
 
+function renderApp(App: () => React.JSX.Element): void {
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
+}
+
 describe('App localStorage integration', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -50,7 +59,7 @@ describe('App localStorage integration', () => {
 
     const { default: App } = await import('./App');
 
-    render(<App />);
+    renderApp(App);
 
     await waitFor(() => {
       expect(fetchCharacters).toHaveBeenCalledWith(
@@ -71,7 +80,7 @@ describe('App localStorage integration', () => {
 
     const { default: App } = await import('./App');
 
-    render(<App />);
+    renderApp(App);
 
     expect(screen.getByLabelText(/search characters/i)).toHaveValue('Rick');
 
@@ -92,7 +101,7 @@ describe('App localStorage integration', () => {
 
     const { default: App } = await import('./App');
 
-    render(<App />);
+    renderApp(App);
 
     expect(
       await screen.findByText(
@@ -109,7 +118,7 @@ describe('App localStorage integration', () => {
 
     const { default: App } = await import('./App');
 
-    render(<App />);
+    renderApp(App);
 
     expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
 
@@ -134,7 +143,7 @@ describe('App localStorage integration', () => {
 
     const { default: App } = await import('./App');
 
-    render(<App />);
+    renderApp(App);
 
     expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
 

@@ -2,10 +2,28 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import Header from './Header';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
+
+function renderHeader(triggerTestError = vi.fn()): void {
+  render(
+    <MemoryRouter>
+      <Header triggerTestError={triggerTestError} />
+    </MemoryRouter>
+  );
+}
 
 describe('Header', () => {
+  it('renders about navigation link', () => {
+    renderHeader();
+
+    expect(screen.getByRole('link', { name: /about/i })).toHaveAttribute(
+      'href',
+      '/about'
+    );
+  });
+
   it('renders test error boundary button', () => {
-    render(<Header triggerTestError={vi.fn()} />);
+    renderHeader();
 
     expect(
       screen.getByRole('button', { name: /test error boundary/i })
@@ -16,7 +34,7 @@ describe('Header', () => {
     const user = userEvent.setup();
     const triggerTestError = vi.fn();
 
-    render(<Header triggerTestError={triggerTestError} />);
+    renderHeader(triggerTestError);
 
     const button = screen.getByRole('button', {
       name: /test error boundary/i,
