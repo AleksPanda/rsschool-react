@@ -4,6 +4,12 @@ export function getPageFromSearchParams(searchParams: URLSearchParams): number {
   return Number.isInteger(pageParam) && pageParam > 0 ? pageParam : 1;
 }
 
+export function getSearchTermFromSearchParams(
+  searchParams: URLSearchParams
+): string {
+  return searchParams.get('search')?.trim() ?? '';
+}
+
 export function createCharacterSearchParams(
   page: number,
   search = ''

@@ -1,6 +1,4 @@
 import { useEffect, useState, type JSX } from 'react';
-import { useLocalStorage } from '../hooks/use-local-storage';
-import { SEARCH_TERM_KEY } from '../utils/local-storage';
 import type { Character } from '../types';
 import { fetchCharacters } from '../api/character-service';
 import Header from '../components/Header';
@@ -10,22 +8,26 @@ import { useOutlet, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   createCharacterSearchParams,
   getPageFromSearchParams,
+  getSearchTermFromSearchParams,
 } from '../utils/url-search-params';
 import Pagination from '../components/Pagination';
 
 function CharactersPage(): JSX.Element {
   const navigate = useNavigate();
-  const [savedSearchTerm, saveSearchTerm] = useLocalStorage(
-    SEARCH_TERM_KEY,
-    ''
-  );
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = getPageFromSearchParams(searchParams);
-  const appliedSearchTerm = searchParams.get('search') ?? savedSearchTerm;
+  const appliedSearchTerm = getSearchTermFromSearchParams(searchParams);
 
-  const [searchInput, setSearchInput] = useState(appliedSearchTerm);
+  const [searchInputState, setSearchInputState] = useState({
+    sourceSearchTerm: appliedSearchTerm,
+    value: appliedSearchTerm,
+  });
+  const isInputSyncedWithCurrentUrl =
+    searchInputState.sourceSearchTerm === appliedSearchTerm;
+  const searchInput = isInputSyncedWithCurrentUrl
+    ? searchInputState.value
+    : appliedSearchTerm;
   const [characters, setCharacters] = useState<Character[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [hasTestError, setHasTestError] = useState(false);
@@ -92,13 +94,14 @@ function CharactersPage(): JSX.Element {
   const handleSearch = (): void => {
     const searchTerm = searchInput.trim();
 
+    setSearchInputState({
+      sourceSearchTerm: searchTerm,
+      value: searchTerm,
+    });
+
     if (searchTerm === appliedSearchTerm && currentPage === 1) {
-      setSearchInput(searchTerm);
       return;
     }
-
-    saveSearchTerm(searchTerm);
-    setSearchInput(searchTerm);
 
     const params = createCharacterSearchParams(1, searchTerm);
 
@@ -109,7 +112,10 @@ function CharactersPage(): JSX.Element {
   };
 
   const handleSearchInputChange = (value: string): void => {
-    setSearchInput(value);
+    setSearchInputState({
+      sourceSearchTerm: appliedSearchTerm,
+      value,
+    });
   };
 
   const handlePageChange = (page: number): void => {

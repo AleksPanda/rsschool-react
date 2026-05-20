@@ -38,15 +38,15 @@ const mockResponse: CharacterResponse = {
   ],
 };
 
-function renderApp(App: () => React.JSX.Element): void {
+function renderApp(App: () => React.JSX.Element, initialEntries = ['/']): void {
   render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={initialEntries}>
       <App />
     </MemoryRouter>
   );
 }
 
-describe('App localStorage integration', () => {
+describe('App URL state integration', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.resetModules();
@@ -72,22 +72,20 @@ describe('App localStorage integration', () => {
     expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
   });
 
-  it('reads search term from localStorage on mount', async () => {
-    localStorage.setItem(SEARCH_TERM_KEY, 'Rick');
-
+  it('reads search term and page from URL params on mount', async () => {
     const { fetchCharacters } = await import('./api/character-service');
     vi.mocked(fetchCharacters).mockResolvedValueOnce(mockResponse);
 
     const { default: App } = await import('./App');
 
-    renderApp(App);
+    renderApp(App, ['/?page=3&search=Rick']);
 
     expect(screen.getByLabelText(/search characters/i)).toHaveValue('Rick');
 
     await waitFor(() => {
       expect(fetchCharacters).toHaveBeenCalledWith(
         'Rick',
-        1,
+        3,
         expect.any(AbortSignal)
       );
     });
@@ -110,7 +108,7 @@ describe('App localStorage integration', () => {
     ).toBeInTheDocument();
   });
 
-  it('saves search term to localStorage after user search', async () => {
+  it('applies search term from the form without saving it to localStorage', async () => {
     const user = userEvent.setup();
 
     const { fetchCharacters } = await import('./api/character-service');
@@ -128,7 +126,7 @@ describe('App localStorage integration', () => {
     await user.type(input, 'Morty');
     await user.click(screen.getByRole('button', { name: /search/i }));
 
-    expect(localStorage.getItem(SEARCH_TERM_KEY)).toBe('Morty');
+    expect(localStorage.getItem(SEARCH_TERM_KEY)).toBeNull();
 
     await waitFor(() => {
       expect(fetchCharacters).toHaveBeenLastCalledWith(
