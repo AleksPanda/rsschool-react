@@ -11,6 +11,7 @@ import {
   getSearchTermFromSearchParams,
 } from '../../utils/url-search-params';
 import Pagination from '../../components/Pagination';
+import './CharactersPage.scss';
 
 function CharactersPage(): JSX.Element {
   const navigate = useNavigate();
