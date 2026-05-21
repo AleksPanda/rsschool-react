@@ -11,6 +11,47 @@ interface CharacterListProps {
   getDetailsPath?: (characterId: number) => string;
 }
 
+interface CharacterListContentProps {
+  character: Character;
+}
+
+function CharacterListContent({
+  character,
+}: CharacterListContentProps): JSX.Element {
+  return (
+    <>
+      <div className="character-list__content">
+        <h3 className="character-list__name">
+          <span className="character-list__name--title">Name:</span>
+          <span className="character-list__value">{character.name}</span>
+        </h3>
+
+        <p className="character-list__description">
+          <span className="character-list__description--title">
+            Description:
+          </span>
+          <span className="character-list__value">
+            {character.species} • {character.status} • {character.gender}
+          </span>
+        </p>
+
+        <p className="character-list__description">
+          <span className="character-list__description--title">Location:</span>
+          <span className="character-list__value">
+            {character.location.name}
+          </span>
+        </p>
+      </div>
+
+      <img
+        className="character-list__image"
+        src={character.image}
+        alt={character.name}
+      />
+    </>
+  );
+}
+
 function CharacterList({
   characters,
   errorMessage,
@@ -44,39 +85,6 @@ function CharacterList({
     );
   }
 
-  const renderCharacterContent = (character: Character): JSX.Element => (
-    <>
-      <div className="character-list__content">
-        <h3 className="character-list__name">
-          <span className="character-list__name--title">Name:</span>
-          <span className="character-list__value">{character.name}</span>
-        </h3>
-
-        <p className="character-list__description">
-          <span className="character-list__description--title">
-            Description:
-          </span>
-          <span className="character-list__value">
-            {character.species} • {character.status} • {character.gender}
-          </span>
-        </p>
-
-        <p className="character-list__description">
-          <span className="character-list__description--title">Location:</span>
-          <span className="character-list__value">
-            {character.location.name}
-          </span>
-        </p>
-      </div>
-
-      <img
-        className="character-list__image"
-        src={character.image}
-        alt={character.name}
-      />
-    </>
-  );
-
   return (
     <ul className="character-list">
       {characters.map((character) => (
@@ -87,10 +95,10 @@ function CharacterList({
               to={getDetailsPath(character.id)}
               aria-label={`View details for ${character.name}`}
             >
-              {renderCharacterContent(character)}
+              <CharacterListContent character={character} />
             </Link>
           ) : (
-            renderCharacterContent(character)
+            <CharacterListContent character={character} />
           )}
         </li>
       ))}
