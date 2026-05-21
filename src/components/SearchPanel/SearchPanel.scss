@@ -1,3 +1,5 @@
+@use '../../styles/placeholders' as *;
+
 .search-panel {
   display: flex;
   flex-direction: column;
@@ -39,8 +41,7 @@
 }
 
 .search-panel__button:focus-visible {
-  outline: 2px solid var(--color-button);
-  outline-offset: 3px;
+  @extend %focus-ring;
 }
 
 @media (max-width: 640px) {

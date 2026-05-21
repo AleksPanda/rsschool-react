@@ -1,3 +1,5 @@
+@use './placeholders' as *;
+
 .app {
   max-width: 960px;
   margin: 0 auto;
@@ -31,8 +33,8 @@
 }
 
 .app-link:focus-visible {
-  outline: 2px solid var(--color-button);
-  outline-offset: 3px;
+  @extend %focus-ring;
+
   border-radius: 4px;
 }
 
