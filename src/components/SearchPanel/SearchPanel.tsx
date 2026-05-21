@@ -1,4 +1,5 @@
 import type { JSX, SyntheticEvent } from 'react';
+import './SearchPanel.scss';
 
 interface SearchPanelProps {
   value: string;

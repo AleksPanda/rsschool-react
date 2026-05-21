@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 import type { Character } from '../../types';
 import { Link } from 'react-router-dom';
+import './CharacterList.scss';
 
 interface CharacterListProps {
   characters: Character[];

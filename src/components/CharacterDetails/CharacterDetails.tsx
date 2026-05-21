@@ -2,6 +2,7 @@ import { useEffect, useState, type JSX } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { fetchCharacterById } from '../../api/character-service';
 import type { Character } from '../../types';
+import './CharacterDetails.scss';
 
 function CharacterDetails(): JSX.Element {
   const { characterId } = useParams<{ characterId: string }>();
