@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 import { Link } from 'react-router-dom';
-import PagePanel from '../components/PagePanel';
+import PagePanel from '../../components/PagePanel';
 
 function AboutPage(): JSX.Element {
   return (

@@ -2,11 +2,11 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { fetchCharacterById } from '../api/character-service';
-import type { Character } from '../types';
+import { fetchCharacterById } from '../../api/character-service';
+import type { Character } from '../../types';
 import CharacterDetails from './CharacterDetails';
 
-vi.mock('../api/character-service', () => ({
+vi.mock('../../api/character-service', () => ({
   fetchCharacterById: vi.fn(),
 }));
 

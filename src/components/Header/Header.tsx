@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 import { Link } from 'react-router-dom';
-import PagePanel from './PagePanel';
+import PagePanel from '../PagePanel';
 
 interface HeaderProps {
   triggerTestError: () => void;

@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
-import PagePanel from './PagePanel';
+import PagePanel from '../PagePanel';
 
 interface ErrorBoundaryProps {
   children: ReactNode;

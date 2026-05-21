@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import type { Character } from '../types';
+import type { Character } from '../../types';
 import { Link } from 'react-router-dom';
 
 interface CharacterListProps {

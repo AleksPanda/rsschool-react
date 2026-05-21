@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import type { Character } from '../types';
+import type { Character } from '../../types';
 import CharacterList from './CharacterList';
 
 const characters: Character[] = [

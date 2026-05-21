@@ -1,16 +1,16 @@
 import { useEffect, useState, type JSX } from 'react';
-import type { Character } from '../types';
-import { fetchCharacters } from '../api/character-service';
-import Header from '../components/Header';
-import SearchPanel from '../components/SearchPanel';
-import CharacterList from '../components/CharacterList';
+import type { Character } from '../../types';
+import { fetchCharacters } from '../../api/character-service';
+import Header from '../../components/Header';
+import SearchPanel from '../../components/SearchPanel';
+import CharacterList from '../../components/CharacterList';
 import { useOutlet, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   createCharacterSearchParams,
   getPageFromSearchParams,
   getSearchTermFromSearchParams,
-} from '../utils/url-search-params';
-import Pagination from '../components/Pagination';
+} from '../../utils/url-search-params';
+import Pagination from '../../components/Pagination';
 
 function CharactersPage(): JSX.Element {
   const navigate = useNavigate();
