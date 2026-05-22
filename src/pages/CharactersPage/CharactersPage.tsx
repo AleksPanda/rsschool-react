@@ -4,17 +4,24 @@ import { fetchCharacters } from '../../api/character-service';
 import Header from '../../components/Header';
 import SearchPanel from '../../components/SearchPanel';
 import CharacterList from '../../components/CharacterList';
-import { useOutlet, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  useOutlet,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import {
   createCharacterSearchParams,
   getPageFromSearchParams,
   getSearchTermFromSearchParams,
 } from '../../utils/url-search-params';
 import Pagination from '../../components/Pagination';
+import { useMediaQuery } from '../../hooks/use-media-query';
 import './CharactersPage.scss';
 
 function CharactersPage(): JSX.Element {
   const navigate = useNavigate();
+  const { characterId } = useParams<{ characterId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = getPageFromSearchParams(searchParams);
@@ -41,6 +48,12 @@ function CharactersPage(): JSX.Element {
 
   const detailsOutlet = useOutlet();
   const hasDetails = Boolean(detailsOutlet);
+  const selectedCharacterId = characterId ? Number(characterId) : null;
+  const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
+  const hasInlineDetails =
+    isMobileDetailsLayout &&
+    selectedCharacterId !== null &&
+    characters.some((character) => character.id === selectedCharacterId);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -162,6 +175,8 @@ function CharactersPage(): JSX.Element {
               errorMessage={visibleErrorMessage}
               isLoading={isLoading}
               placeholder="Results will appear here."
+              detailsOutlet={hasInlineDetails ? detailsOutlet : null}
+              selectedCharacterId={selectedCharacterId}
               getDetailsPath={(characterId) => {
                 const queryString = searchParams.toString();
 
@@ -179,7 +194,7 @@ function CharactersPage(): JSX.Element {
               />
             )}
           </div>
-          {hasDetails && (
+          {hasDetails && !hasInlineDetails && (
             <aside className="results-layout__details">{detailsOutlet}</aside>
           )}
         </div>

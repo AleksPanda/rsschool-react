@@ -19,6 +19,14 @@
   gap: var(--space-lg);
 }
 
+.character-list__details {
+  margin: var(--space-md) 0;
+}
+
+.character-list--after-details {
+  margin-top: 0;
+}
+
 .character-list__content {
   flex: 1;
   min-width: 0;

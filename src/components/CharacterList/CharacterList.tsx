@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 import type { Character } from '../../types';
 import { Link } from 'react-router-dom';
 import './CharacterList.scss';
@@ -8,11 +8,18 @@ interface CharacterListProps {
   errorMessage: string;
   isLoading: boolean;
   placeholder: string;
+  detailsOutlet?: ReactNode;
   getDetailsPath?: (characterId: number) => string;
+  selectedCharacterId?: number | null;
 }
 
 interface CharacterListContentProps {
   character: Character;
+}
+
+interface CharacterListItemProps {
+  character: Character;
+  detailsPath?: string;
 }
 
 function CharacterListContent({
@@ -52,12 +59,37 @@ function CharacterListContent({
   );
 }
 
+function CharacterListItem({
+  character,
+  detailsPath,
+}: CharacterListItemProps): JSX.Element {
+  const content = <CharacterListContent character={character} />;
+
+  return (
+    <li className="character-list__item">
+      {detailsPath ? (
+        <Link
+          className="character-list__link"
+          to={detailsPath}
+          aria-label={`View details for ${character.name}`}
+        >
+          {content}
+        </Link>
+      ) : (
+        content
+      )}
+    </li>
+  );
+}
+
 function CharacterList({
   characters,
   errorMessage,
   isLoading,
   placeholder,
+  detailsOutlet,
   getDetailsPath,
+  selectedCharacterId,
 }: CharacterListProps): JSX.Element {
   if (isLoading) {
     return (
@@ -85,24 +117,48 @@ function CharacterList({
     );
   }
 
-  return (
-    <ul className="character-list">
-      {characters.map((character) => (
-        <li className="character-list__item" key={character.id}>
-          {getDetailsPath ? (
-            <Link
-              className="character-list__link"
-              to={getDetailsPath(character.id)}
-              aria-label={`View details for ${character.name}`}
-            >
-              <CharacterListContent character={character} />
-            </Link>
-          ) : (
-            <CharacterListContent character={character} />
+  const renderCharacterItem = (character: Character): JSX.Element => (
+    <CharacterListItem
+      key={character.id}
+      character={character}
+      detailsPath={getDetailsPath?.(character.id)}
+    />
+  );
+
+  if (detailsOutlet && selectedCharacterId !== null) {
+    const selectedCharacterIndex = characters.findIndex(
+      (character) => character.id === selectedCharacterId
+    );
+
+    if (selectedCharacterIndex !== -1) {
+      const charactersBeforeDetails = characters.slice(
+        0,
+        selectedCharacterIndex + 1
+      );
+      const charactersAfterDetails = characters.slice(
+        selectedCharacterIndex + 1
+      );
+
+      return (
+        <>
+          <ul className="character-list">
+            {charactersBeforeDetails.map(renderCharacterItem)}
+          </ul>
+
+          <div className="character-list__details">{detailsOutlet}</div>
+
+          {charactersAfterDetails.length > 0 && (
+            <ul className="character-list character-list--after-details">
+              {charactersAfterDetails.map(renderCharacterItem)}
+            </ul>
           )}
-        </li>
-      ))}
-    </ul>
+        </>
+      );
+    }
+  }
+
+  return (
+    <ul className="character-list">{characters.map(renderCharacterItem)}</ul>
   );
 }
 
