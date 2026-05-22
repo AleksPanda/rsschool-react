@@ -3,12 +3,15 @@ import { describe, expect, it, vi } from 'vitest';
 import Header from './Header';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import ThemeProvider from '../../context/theme-provider';
 
 function renderHeader(triggerTestError = vi.fn()): void {
   render(
-    <MemoryRouter>
-      <Header triggerTestError={triggerTestError} />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <Header triggerTestError={triggerTestError} />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 }
 

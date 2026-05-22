@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import type { CharacterResponse } from './types';
 import { SEARCH_TERM_KEY } from './utils/local-storage';
+import ThemeProvider from './context/theme-provider';
 
 vi.mock('./api/character-service', () => ({
   fetchCharacters: vi.fn(),
@@ -40,16 +41,17 @@ const mockResponse: CharacterResponse = {
 
 function renderApp(App: () => React.JSX.Element, initialEntries = ['/']): void {
   render(
-    <MemoryRouter initialEntries={initialEntries}>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter initialEntries={initialEntries}>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 }
 
 describe('App URL state integration', () => {
   beforeEach(() => {
     localStorage.clear();
-    vi.resetModules();
     vi.clearAllMocks();
   });
 
