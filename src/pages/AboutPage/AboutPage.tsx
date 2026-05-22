@@ -37,7 +37,7 @@ function AboutPage(): JSX.Element {
         </>
       }
       actions={
-        <Link className="header-panel__test-error-button" to="/">
+        <Link className="app-button" to="/">
           Return to the main page
         </Link>
       }

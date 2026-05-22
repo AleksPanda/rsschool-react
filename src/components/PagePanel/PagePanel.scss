@@ -34,8 +34,7 @@
   gap: var(--space-sm);
 }
 
-.header-panel__test-error-button,
-.app__test-error-button {
+.app-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -62,8 +61,7 @@
     display: none;
   }
 
-  .header-panel__test-error-button,
-  .app__test-error-button {
+  .app-button {
     width: 100%;
   }
 }

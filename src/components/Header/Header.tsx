@@ -14,11 +14,11 @@ function Header({ triggerTestError }: HeaderProps): JSX.Element {
       imageSrc="/rick-n-morty.png"
       actions={
         <>
-          <Link className="header-panel__test-error-button" to="/about">
+          <Link className="app-button" to="/about">
             About
           </Link>
           <button
-            className="header-panel__test-error-button"
+            className="app-button"
             type="button"
             onClick={triggerTestError}
           >

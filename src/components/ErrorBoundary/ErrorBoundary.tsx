@@ -36,7 +36,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             imageSrc="/rick-cucumber.png"
             actions={
               <button
-                className="header-panel__test-error-button"
+                className="app-button"
                 type="button"
                 onClick={this.handleGoBack}
               >

@@ -9,7 +9,7 @@ function NotFoundPage(): JSX.Element {
       description="The page you are looking for does not exist."
       imageSrc="/jerry.png"
       actions={
-        <Link className="header-panel__test-error-button" to="/">
+        <Link className="app-button" to="/">
           Return to the main page
         </Link>
       }
