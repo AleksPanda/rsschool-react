@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { fetchCharacterById } from '../../api/character-service';
 import type { Character } from '../../types';
 import CharacterDetails from './CharacterDetails';
@@ -28,15 +27,8 @@ const character: Character = {
   image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
 };
 
-function renderCharacterDetails(initialEntry = '/details/1?page=2'): void {
-  render(
-    <MemoryRouter initialEntries={[initialEntry]}>
-      <Routes>
-        <Route path="/" element={<p>Main page</p>} />
-        <Route path="/details/:characterId" element={<CharacterDetails />} />
-      </Routes>
-    </MemoryRouter>
-  );
+function renderCharacterDetails(onClose = vi.fn()): void {
+  render(<CharacterDetails characterId="1" onClose={onClose} />);
 }
 
 describe('CharacterDetails', () => {
@@ -75,13 +67,14 @@ describe('CharacterDetails', () => {
 
   it('closes details panel and returns to the main page', async () => {
     const user = userEvent.setup();
+    const handleClose = vi.fn();
 
     vi.mocked(fetchCharacterById).mockResolvedValueOnce(character);
 
-    renderCharacterDetails();
+    renderCharacterDetails(handleClose);
 
     await user.click(screen.getByRole('button', { name: /close details/i }));
 
-    expect(await screen.findByText('Main page')).toBeInTheDocument();
+    expect(handleClose).toHaveBeenCalledOnce();
   });
 });

@@ -1,14 +1,17 @@
 import { useEffect, useState, type JSX } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { fetchCharacterById } from '../../api/character-service';
 import type { Character } from '../../types';
 import './CharacterDetails.scss';
 
-function CharacterDetails(): JSX.Element {
-  const { characterId } = useParams<{ characterId: string }>();
-  const navigate = useNavigate();
-  const location = useLocation();
+interface CharacterDetailsProps {
+  characterId: string;
+  onClose: () => void;
+}
 
+function CharacterDetails({
+  characterId,
+  onClose,
+}: CharacterDetailsProps): JSX.Element {
   const [character, setCharacter] = useState<Character | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [loadedCharacterId, setLoadedCharacterId] = useState('');
@@ -18,10 +21,6 @@ function CharacterDetails(): JSX.Element {
   const visibleErrorMessage = isLoading ? '' : errorMessage;
 
   useEffect(() => {
-    if (!characterId) {
-      return;
-    }
-
     const currentCharacterId = characterId;
 
     const controller = new AbortController();
@@ -62,19 +61,12 @@ function CharacterDetails(): JSX.Element {
     };
   }, [characterId]);
 
-  const handleClose = (): void => {
-    navigate({
-      pathname: '/',
-      search: location.search,
-    });
-  };
-
   return (
     <article className="details-panel">
       <button
         className="details-panel__close-button"
         type="button"
-        onClick={handleClose}
+        onClick={onClose}
         aria-label="Close details"
       >
         ×

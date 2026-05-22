@@ -4,28 +4,24 @@ import { fetchCharacters } from '../../api/character-service';
 import Header from '../../components/Header';
 import SearchPanel from '../../components/SearchPanel';
 import CharacterList from '../../components/CharacterList';
-import {
-  useOutlet,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   createCharacterSearchParams,
   getPageFromSearchParams,
   getSearchTermFromSearchParams,
 } from '../../utils/url-search-params';
 import Pagination from '../../components/Pagination';
+import CharacterDetails from '../../components/CharacterDetails';
 import { useMediaQuery } from '../../hooks/use-media-query';
 import './CharactersPage.scss';
 
 function CharactersPage(): JSX.Element {
   const navigate = useNavigate();
-  const { characterId } = useParams<{ characterId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = getPageFromSearchParams(searchParams);
   const appliedSearchTerm = getSearchTermFromSearchParams(searchParams);
+  const selectedCharacterId = searchParams.get('details');
 
   const [searchInputState, setSearchInputState] = useState({
     sourceSearchTerm: appliedSearchTerm,
@@ -46,14 +42,25 @@ function CharactersPage(): JSX.Element {
   const isLoading = loadedRequestKey !== currentRequestKey;
   const visibleErrorMessage = isLoading ? '' : errorMessage;
 
-  const detailsOutlet = useOutlet();
-  const hasDetails = Boolean(detailsOutlet);
-  const selectedCharacterId = characterId ? Number(characterId) : null;
+  const hasDetails = Boolean(selectedCharacterId);
   const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
   const hasInlineDetails =
     isMobileDetailsLayout &&
     selectedCharacterId !== null &&
-    characters.some((character) => character.id === selectedCharacterId);
+    characters.some(
+      (character) => String(character.id) === selectedCharacterId
+    );
+  const detailsPanel = selectedCharacterId ? (
+    <CharacterDetails
+      characterId={selectedCharacterId}
+      onClose={() => {
+        const params = new URLSearchParams(searchParams);
+
+        params.delete('details');
+        setSearchParams(params);
+      }}
+    />
+  ) : null;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -175,14 +182,16 @@ function CharactersPage(): JSX.Element {
               errorMessage={visibleErrorMessage}
               isLoading={isLoading}
               placeholder="Results will appear here."
-              detailsOutlet={hasInlineDetails ? detailsOutlet : null}
-              selectedCharacterId={selectedCharacterId}
+              detailsOutlet={hasInlineDetails ? detailsPanel : null}
+              selectedCharacterId={
+                selectedCharacterId ? Number(selectedCharacterId) : null
+              }
               getDetailsPath={(characterId) => {
-                const queryString = searchParams.toString();
+                const params = new URLSearchParams(searchParams);
 
-                return queryString
-                  ? `/details/${characterId}?${queryString}`
-                  : `/details/${characterId}`;
+                params.set('details', String(characterId));
+
+                return `/?${params.toString()}`;
               }}
             />
 
@@ -195,7 +204,7 @@ function CharactersPage(): JSX.Element {
             )}
           </div>
           {hasDetails && !hasInlineDetails && (
-            <aside className="results-layout__details">{detailsOutlet}</aside>
+            <aside className="results-layout__details">{detailsPanel}</aside>
           )}
         </div>
       </section>
