@@ -8,6 +8,23 @@ interface CharacterDetailsProps {
   onClose: () => void;
 }
 
+interface CharacterDetailsRowProps {
+  label: string;
+  value: string | number;
+}
+
+function CharacterDetailsRow({
+  label,
+  value,
+}: CharacterDetailsRowProps): JSX.Element {
+  return (
+    <div className="details-panel__row">
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
 function CharacterDetails({
   characterId,
   onClose,
@@ -95,46 +112,27 @@ function CharacterDetails({
           <h3 className="details-panel__title">{character.name}</h3>
 
           <dl className="details-panel__list">
-            <div className="details-panel__row">
-              <dt>Status</dt>
-              <dd>{character.status}</dd>
-            </div>
-
-            <div className="details-panel__row">
-              <dt>Species</dt>
-              <dd>{character.species}</dd>
-            </div>
+            <CharacterDetailsRow label="Status" value={character.status} />
+            <CharacterDetailsRow label="Species" value={character.species} />
 
             {character.type && (
-              <div className="details-panel__row">
-                <dt>Type</dt>
-                <dd>{character.type}</dd>
-              </div>
+              <CharacterDetailsRow label="Type" value={character.type} />
             )}
 
-            <div className="details-panel__row">
-              <dt>Gender</dt>
-              <dd>{character.gender}</dd>
-            </div>
-
-            <div className="details-panel__row">
-              <dt>Origin</dt>
-              <dd>{character.origin.name}</dd>
-            </div>
-
-            <div className="details-panel__row">
-              <dt>Location</dt>
-              <dd>{character.location.name}</dd>
-            </div>
+            <CharacterDetailsRow label="Gender" value={character.gender} />
+            <CharacterDetailsRow label="Origin" value={character.origin.name} />
+            <CharacterDetailsRow
+              label="Location"
+              value={character.location.name}
+            />
 
             {character.episode && (
-              <div className="details-panel__row">
-                <dt>Episodes</dt>
-                <dd>
-                  {character.episode.length}{' '}
-                  {character.episode.length === 1 ? 'episode' : 'episodes'}
-                </dd>
-              </div>
+              <CharacterDetailsRow
+                label="Episodes"
+                value={`${character.episode.length} ${
+                  character.episode.length === 1 ? 'episode' : 'episodes'
+                }`}
+              />
             )}
           </dl>
         </>
