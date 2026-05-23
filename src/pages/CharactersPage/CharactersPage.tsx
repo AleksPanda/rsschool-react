@@ -13,6 +13,7 @@ import CharacterDetails from '../../components/CharacterDetails';
 import { useMediaQuery } from '../../hooks/use-media-query';
 import './CharactersPage.scss';
 import { useCharactersStore } from '../../store/characters-store';
+import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedItemsFlyout';
 
 function CharactersPage(): JSX.Element {
   // Router hooks
@@ -161,6 +162,12 @@ function CharactersPage(): JSX.Element {
     setHasTestError(true);
   };
 
+  const clearSelectedCharacters = useCharactersStore(
+    (state) => state.clearSelectedCharacters
+  );
+
+  const handleDownloadSelected = (): void => {};
+
   // Render helpers
   const detailsPanel = selectedCharacterId ? (
     <CharacterDetails
@@ -205,6 +212,12 @@ function CharactersPage(): JSX.Element {
               selectedCharacterIds={selectedCharacterIds}
               onToggleCharacterSelection={toggleCharacterSelection}
               getDetailsPath={getDetailsPath}
+            />
+
+            <SelectedItemsFlyout
+              selectedCount={selectedCharacterIds.length}
+              onUnselectAll={clearSelectedCharacters}
+              onDownload={handleDownloadSelected}
             />
 
             {!isLoading && !visibleErrorMessage && characters.length > 0 && (

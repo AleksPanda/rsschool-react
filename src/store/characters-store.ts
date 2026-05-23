@@ -29,6 +29,7 @@ interface CharactersStore {
 
   setSearchInputState: (searchInputState: SearchInputState) => void;
   toggleCharacterSelection: (characterId: number) => void;
+  clearSelectedCharacters: () => void;
   loadCharacters: (params: LoadCharactersParams) => Promise<void>;
 }
 
@@ -59,6 +60,10 @@ export const useCharactersStore = create<CharactersStore>()(
               : [...state.selectedCharacterIds, characterId],
           };
         });
+      },
+
+      clearSelectedCharacters: () => {
+        set({ selectedCharacterIds: [] });
       },
 
       loadCharacters: async ({ searchTerm, page, requestKey, signal }) => {
