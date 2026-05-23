@@ -11,6 +11,8 @@ interface CharacterListProps {
   detailsOutlet?: ReactNode;
   getDetailsPath?: (characterId: number) => string;
   selectedCharacterId?: number | null;
+  selectedCharacterIds: number[];
+  onToggleCharacterSelection: (characterId: number) => void;
 }
 
 interface CharacterListContentProps {
@@ -20,6 +22,8 @@ interface CharacterListContentProps {
 interface CharacterListItemProps {
   character: Character;
   detailsPath?: string;
+  isSelected: boolean;
+  onToggleSelection: (characterId: number) => void;
 }
 
 function CharacterListContent({
@@ -62,11 +66,25 @@ function CharacterListContent({
 function CharacterListItem({
   character,
   detailsPath,
+  isSelected,
+  onToggleSelection,
 }: CharacterListItemProps): JSX.Element {
   const content = <CharacterListContent character={character} />;
 
   return (
     <li className="character-list__item">
+      <label className="character-list__checkbox-label">
+        <input
+          checked={isSelected}
+          className="character-list__checkbox"
+          type="checkbox"
+          aria-label={`Select ${character.name}`}
+          onChange={() => {
+            onToggleSelection(character.id);
+          }}
+        />
+      </label>
+
       {detailsPath ? (
         <Link
           className="character-list__link"
@@ -90,6 +108,8 @@ function CharacterList({
   detailsOutlet,
   getDetailsPath,
   selectedCharacterId,
+  selectedCharacterIds,
+  onToggleCharacterSelection,
 }: CharacterListProps): JSX.Element {
   if (isLoading) {
     return (
@@ -122,6 +142,8 @@ function CharacterList({
       key={character.id}
       character={character}
       detailsPath={getDetailsPath?.(character.id)}
+      isSelected={selectedCharacterIds.includes(character.id)}
+      onToggleSelection={onToggleCharacterSelection}
     />
   );
 

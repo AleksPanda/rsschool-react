@@ -34,11 +34,17 @@ function CharactersPage(): JSX.Element {
   const searchInputState = useCharactersStore(
     (state) => state.searchInputState
   );
+  const selectedCharacterIds = useCharactersStore(
+    (state) => state.selectedCharacterIds
+  );
 
   // Zustand actions
   const loadCharacters = useCharactersStore((state) => state.loadCharacters);
   const setSearchInputState = useCharactersStore(
     (state) => state.setSearchInputState
+  );
+  const toggleCharacterSelection = useCharactersStore(
+    (state) => state.toggleCharacterSelection
   );
 
   // Local state and other hooks
@@ -193,6 +199,8 @@ function CharactersPage(): JSX.Element {
               placeholder="Results will appear here."
               detailsOutlet={hasInlineDetails ? detailsPanel : null}
               selectedCharacterId={selectedCharacterNumericId}
+              selectedCharacterIds={selectedCharacterIds}
+              onToggleCharacterSelection={toggleCharacterSelection}
               getDetailsPath={getDetailsPath}
             />
 
