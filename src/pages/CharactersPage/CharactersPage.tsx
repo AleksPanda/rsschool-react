@@ -1,6 +1,4 @@
 import { useEffect, useState, type JSX } from 'react';
-import type { Character } from '../../types';
-import { fetchCharacters } from '../../api/character-service';
 import Header from '../../components/Header';
 import SearchPanel from '../../components/SearchPanel';
 import CharacterList from '../../components/CharacterList';
@@ -14,93 +12,76 @@ import Pagination from '../../components/Pagination';
 import CharacterDetails from '../../components/CharacterDetails';
 import { useMediaQuery } from '../../hooks/use-media-query';
 import './CharactersPage.scss';
+import { useCharactersStore } from '../../store/characters-store';
 
 function CharactersPage(): JSX.Element {
+  // Router hooks
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // URL state
   const currentPage = getPageFromSearchParams(searchParams);
   const appliedSearchTerm = getSearchTermFromSearchParams(searchParams);
   const selectedCharacterId = searchParams.get('details');
 
-  const [searchInputState, setSearchInputState] = useState({
-    sourceSearchTerm: appliedSearchTerm,
-    value: appliedSearchTerm,
-  });
-  const isInputSyncedWithCurrentUrl =
-    searchInputState.sourceSearchTerm === appliedSearchTerm;
-  const searchInput = isInputSyncedWithCurrentUrl
-    ? searchInputState.value
-    : appliedSearchTerm;
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [hasTestError, setHasTestError] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
+  // Zustand state
+  const characters = useCharactersStore((state) => state.characters);
+  const totalPages = useCharactersStore((state) => state.totalPages);
+  const errorMessage = useCharactersStore((state) => state.errorMessage);
+  const loadedRequestKey = useCharactersStore(
+    (state) => state.loadedRequestKey
+  );
+  const searchInputState = useCharactersStore(
+    (state) => state.searchInputState
+  );
 
+  // Zustand actions
+  const loadCharacters = useCharactersStore((state) => state.loadCharacters);
+  const setSearchInputState = useCharactersStore(
+    (state) => state.setSearchInputState
+  );
+
+  // Local state and other hooks
+  const [hasTestError, setHasTestError] = useState(false);
+  const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
+
+  // Derived state
+  // помогает понять, какой именно запрос уже загружен
   const currentRequestKey = `${currentPage}:${appliedSearchTerm}`;
-  const [loadedRequestKey, setLoadedRequestKey] = useState('');
   const isLoading = loadedRequestKey !== currentRequestKey;
   const visibleErrorMessage = isLoading ? '' : errorMessage;
 
+  const isInputSyncedWithCurrentUrl =
+    searchInputState.sourceSearchTerm === appliedSearchTerm;
+
+  const searchInput = isInputSyncedWithCurrentUrl
+    ? searchInputState.value
+    : appliedSearchTerm;
+
   const hasDetails = Boolean(selectedCharacterId);
-  const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
+
   const hasInlineDetails =
     isMobileDetailsLayout &&
     selectedCharacterId !== null &&
     characters.some(
       (character) => String(character.id) === selectedCharacterId
     );
-  const detailsPanel = selectedCharacterId ? (
-    <CharacterDetails
-      characterId={selectedCharacterId}
-      onClose={() => {
-        const params = new URLSearchParams(searchParams);
 
-        params.delete('details');
-        setSearchParams(params);
-      }}
-    />
-  ) : null;
-
+  // Effects
   useEffect(() => {
     const controller = new AbortController();
 
-    async function loadCharacters(): Promise<void> {
-      try {
-        const data = await fetchCharacters(
-          appliedSearchTerm,
-          currentPage,
-          controller.signal
-        );
-
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setCharacters(data.results);
-        setTotalPages(data.info.pages);
-        setErrorMessage('');
-      } catch {
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setCharacters([]);
-        setTotalPages(0);
-        setErrorMessage('Unable to load characters. Please try again later.');
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoadedRequestKey(currentRequestKey);
-        }
-      }
-    }
-
-    void loadCharacters();
+    void loadCharacters({
+      searchTerm: appliedSearchTerm,
+      page: currentPage,
+      requestKey: currentRequestKey,
+      signal: controller.signal,
+    });
 
     return () => {
       controller.abort();
     };
-  }, [appliedSearchTerm, currentPage, currentRequestKey]);
+  }, [appliedSearchTerm, currentPage, currentRequestKey, loadCharacters]);
 
   useEffect(() => {
     if (searchParams.has('page')) {
@@ -112,6 +93,7 @@ function CharactersPage(): JSX.Element {
     });
   }, [appliedSearchTerm, searchParams, setSearchParams]);
 
+  // Handlers
   const handleSearch = (): void => {
     const searchTerm = searchInput.trim();
 
@@ -150,6 +132,19 @@ function CharactersPage(): JSX.Element {
   const triggerTestError = (): void => {
     setHasTestError(true);
   };
+
+  // Render helpers
+  const detailsPanel = selectedCharacterId ? (
+    <CharacterDetails
+      characterId={selectedCharacterId}
+      onClose={() => {
+        const params = new URLSearchParams(searchParams);
+
+        params.delete('details');
+        setSearchParams(params);
+      }}
+    />
+  ) : null;
 
   if (hasTestError) {
     throw new Error('Test error boundary error');
