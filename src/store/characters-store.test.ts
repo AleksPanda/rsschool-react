@@ -23,6 +23,7 @@ describe('useCharactersStore', () => {
         sourceSearchTerm: '',
         value: '',
       },
+      selectedCharacterIds: [],
     });
   });
 
