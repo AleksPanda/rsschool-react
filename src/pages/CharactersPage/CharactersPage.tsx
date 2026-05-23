@@ -45,7 +45,7 @@ function CharactersPage(): JSX.Element {
   const [hasTestError, setHasTestError] = useState(false);
   const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
 
-  // Derived state
+  // Calculated values
   // помогает понять, какой именно запрос уже загружен
   const currentRequestKey = `${currentPage}:${appliedSearchTerm}`;
   const isLoading = loadedRequestKey !== currentRequestKey;
@@ -66,6 +66,10 @@ function CharactersPage(): JSX.Element {
     characters.some(
       (character) => String(character.id) === selectedCharacterId
     );
+
+  const selectedCharacterNumericId = selectedCharacterId
+    ? Number(selectedCharacterId)
+    : null;
 
   // Effects
   useEffect(() => {
@@ -94,6 +98,13 @@ function CharactersPage(): JSX.Element {
   }, [appliedSearchTerm, searchParams, setSearchParams]);
 
   // Handlers
+  const handleCloseDetails = (): void => {
+    const params = new URLSearchParams(searchParams);
+
+    params.delete('details');
+    setSearchParams(params);
+  };
+
   const handleSearch = (): void => {
     const searchTerm = searchInput.trim();
 
@@ -129,6 +140,14 @@ function CharactersPage(): JSX.Element {
     setSearchParams(createCharacterSearchParams(page, appliedSearchTerm));
   };
 
+  const getDetailsPath = (characterId: number): string => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set('details', String(characterId));
+
+    return `/?${params.toString()}`;
+  };
+
   const triggerTestError = (): void => {
     setHasTestError(true);
   };
@@ -137,12 +156,7 @@ function CharactersPage(): JSX.Element {
   const detailsPanel = selectedCharacterId ? (
     <CharacterDetails
       characterId={selectedCharacterId}
-      onClose={() => {
-        const params = new URLSearchParams(searchParams);
-
-        params.delete('details');
-        setSearchParams(params);
-      }}
+      onClose={handleCloseDetails}
     />
   ) : null;
 
@@ -178,16 +192,8 @@ function CharactersPage(): JSX.Element {
               isLoading={isLoading}
               placeholder="Results will appear here."
               detailsOutlet={hasInlineDetails ? detailsPanel : null}
-              selectedCharacterId={
-                selectedCharacterId ? Number(selectedCharacterId) : null
-              }
-              getDetailsPath={(characterId) => {
-                const params = new URLSearchParams(searchParams);
-
-                params.set('details', String(characterId));
-
-                return `/?${params.toString()}`;
-              }}
+              selectedCharacterId={selectedCharacterNumericId}
+              getDetailsPath={getDetailsPath}
             />
 
             {!isLoading && !visibleErrorMessage && characters.length > 0 && (
