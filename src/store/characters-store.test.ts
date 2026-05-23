@@ -12,6 +12,7 @@ vi.mock('../api/character-service', () => ({
 describe('useCharactersStore', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
 
     useCharactersStore.setState({
       characters: [],

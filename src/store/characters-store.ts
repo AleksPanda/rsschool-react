@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 import { fetchCharacters } from '../api/character-service';
 import type { Character } from '../types';
@@ -31,60 +32,70 @@ interface CharactersStore {
   loadCharacters: (params: LoadCharactersParams) => Promise<void>;
 }
 
-export const useCharactersStore = create<CharactersStore>()((set) => ({
-  characters: [],
-  totalPages: 0,
-  errorMessage: '',
-  loadedRequestKey: '',
-  searchInputState: {
-    sourceSearchTerm: '',
-    value: '',
-  },
-  selectedCharacterIds: [],
+export const useCharactersStore = create<CharactersStore>()(
+  persist(
+    (set) => ({
+      characters: [],
+      totalPages: 0,
+      errorMessage: '',
+      loadedRequestKey: '',
+      searchInputState: {
+        sourceSearchTerm: '',
+        value: '',
+      },
+      selectedCharacterIds: [],
 
-  setSearchInputState: (newSearchInputState) => {
-    set({ searchInputState: newSearchInputState });
-  },
+      setSearchInputState: (newSearchInputState) => {
+        set({ searchInputState: newSearchInputState });
+      },
 
-  toggleCharacterSelection: (characterId) => {
-    set((state) => {
-      const isSelected = state.selectedCharacterIds.includes(characterId);
+      toggleCharacterSelection: (characterId) => {
+        set((state) => {
+          const isSelected = state.selectedCharacterIds.includes(characterId);
 
-      return {
-        selectedCharacterIds: isSelected
-          ? state.selectedCharacterIds.filter((id) => id !== characterId)
-          : [...state.selectedCharacterIds, characterId],
-      };
-    });
-  },
+          return {
+            selectedCharacterIds: isSelected
+              ? state.selectedCharacterIds.filter((id) => id !== characterId)
+              : [...state.selectedCharacterIds, characterId],
+          };
+        });
+      },
 
-  loadCharacters: async ({ searchTerm, page, requestKey, signal }) => {
-    try {
-      const data = await fetchCharacters(searchTerm, page, signal);
+      loadCharacters: async ({ searchTerm, page, requestKey, signal }) => {
+        try {
+          const data = await fetchCharacters(searchTerm, page, signal);
 
-      if (signal?.aborted) {
-        return;
-      }
+          if (signal?.aborted) {
+            return;
+          }
 
-      set({
-        characters: data.results,
-        totalPages: data.info.pages,
-        errorMessage: '',
-      });
-    } catch {
-      if (signal?.aborted) {
-        return;
-      }
+          set({
+            characters: data.results,
+            totalPages: data.info.pages,
+            errorMessage: '',
+          });
+        } catch {
+          if (signal?.aborted) {
+            return;
+          }
 
-      set({
-        characters: [],
-        totalPages: 0,
-        errorMessage: CHARACTERS_ERROR_MESSAGE,
-      });
-    } finally {
-      if (!signal?.aborted) {
-        set({ loadedRequestKey: requestKey });
-      }
+          set({
+            characters: [],
+            totalPages: 0,
+            errorMessage: CHARACTERS_ERROR_MESSAGE,
+          });
+        } finally {
+          if (!signal?.aborted) {
+            set({ loadedRequestKey: requestKey });
+          }
+        }
+      },
+    }),
+    {
+      name: 'characters-store',
+      partialize: (state) => ({
+        selectedCharacterIds: state.selectedCharacterIds,
+      }),
     }
-  },
-}));
+  )
+);
