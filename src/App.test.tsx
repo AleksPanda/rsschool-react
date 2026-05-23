@@ -3,41 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 
-import type { CharacterResponse } from './types';
+import { mockCharacterResponse } from './test-utils/mock-character-response';
 import { SEARCH_TERM_KEY } from './utils/local-storage';
 import ThemeProvider from './context/theme-provider';
 
 vi.mock('./api/character-service', () => ({
   fetchCharacters: vi.fn(),
 }));
-
-const mockResponse: CharacterResponse = {
-  info: {
-    count: 1,
-    pages: 1,
-    next: null,
-    prev: null,
-  },
-  results: [
-    {
-      id: 1,
-      name: 'Rick Sanchez',
-      status: 'Alive',
-      species: 'Human',
-      type: '',
-      gender: 'Male',
-      origin: {
-        name: 'Earth',
-        url: '',
-      },
-      location: {
-        name: 'Citadel of Ricks',
-        url: '',
-      },
-      image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-    },
-  ],
-};
 
 function renderApp(App: () => React.JSX.Element, initialEntries = ['/']): void {
   render(
@@ -57,7 +29,7 @@ describe('App URL state integration', () => {
 
   it('loads characters with empty search term when localStorage is empty', async () => {
     const { fetchCharacters } = await import('./api/character-service');
-    vi.mocked(fetchCharacters).mockResolvedValueOnce(mockResponse);
+    vi.mocked(fetchCharacters).mockResolvedValueOnce(mockCharacterResponse);
 
     const { default: App } = await import('./App');
 
@@ -76,7 +48,7 @@ describe('App URL state integration', () => {
 
   it('reads search term and page from URL params on mount', async () => {
     const { fetchCharacters } = await import('./api/character-service');
-    vi.mocked(fetchCharacters).mockResolvedValueOnce(mockResponse);
+    vi.mocked(fetchCharacters).mockResolvedValueOnce(mockCharacterResponse);
 
     const { default: App } = await import('./App');
 
@@ -114,7 +86,7 @@ describe('App URL state integration', () => {
     const user = userEvent.setup();
 
     const { fetchCharacters } = await import('./api/character-service');
-    vi.mocked(fetchCharacters).mockResolvedValue(mockResponse);
+    vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
 
     const { default: App } = await import('./App');
 
@@ -143,7 +115,7 @@ describe('App URL state integration', () => {
     const user = userEvent.setup();
 
     const { fetchCharacters } = await import('./api/character-service');
-    vi.mocked(fetchCharacters).mockResolvedValue(mockResponse);
+    vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
 
     const { default: App } = await import('./App');
 

@@ -1,27 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import type { Character } from '../../types';
+import { mockCharacter } from '../../test-utils/mock-character';
 import CharacterList from './CharacterList';
-
-const characters: Character[] = [
-  {
-    id: 1,
-    name: 'Rick Sanchez',
-    status: 'Alive',
-    species: 'Human',
-    type: '',
-    gender: 'Male',
-    origin: {
-      name: 'Earth (C-137)',
-      url: 'https://rickandmortyapi.com/api/location/1',
-    },
-    location: {
-      name: 'Citadel of Ricks',
-      url: 'https://rickandmortyapi.com/api/location/3',
-    },
-    image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-  },
-];
 
 const placeholder = 'Test results will appear here.';
 const errorMessage = 'Test error';
@@ -69,7 +49,7 @@ describe('CharacterList', () => {
   it('renders provided character details', () => {
     render(
       <CharacterList
-        characters={characters}
+        characters={[mockCharacter]}
         errorMessage=""
         isLoading={false}
         placeholder={placeholder}
