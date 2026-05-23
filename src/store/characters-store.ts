@@ -24,8 +24,10 @@ interface CharactersStore {
   errorMessage: string;
   loadedRequestKey: string;
   searchInputState: SearchInputState;
+  selectedCharacterIds: number[];
 
   setSearchInputState: (searchInputState: SearchInputState) => void;
+  toggleCharacterSelection: (characterId: number) => void;
   loadCharacters: (params: LoadCharactersParams) => Promise<void>;
 }
 
@@ -38,9 +40,22 @@ export const useCharactersStore = create<CharactersStore>()((set) => ({
     sourceSearchTerm: '',
     value: '',
   },
+  selectedCharacterIds: [],
 
   setSearchInputState: (newSearchInputState) => {
     set({ searchInputState: newSearchInputState });
+  },
+
+  toggleCharacterSelection: (characterId) => {
+    set((state) => {
+      const isSelected = state.selectedCharacterIds.includes(characterId);
+
+      return {
+        selectedCharacterIds: isSelected
+          ? state.selectedCharacterIds.filter((id) => id !== characterId)
+          : [...state.selectedCharacterIds, characterId],
+      };
+    });
   },
 
   loadCharacters: async ({ searchTerm, page, requestKey, signal }) => {
