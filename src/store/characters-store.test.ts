@@ -107,4 +107,14 @@ describe('useCharactersStore', () => {
       loadedRequestKey: 'previous-request',
     });
   });
+
+  it('toggleCharacterSelection selects and unselects character', () => {
+    useCharactersStore.getState().toggleCharacterSelection(1);
+
+    expect(useCharactersStore.getState().selectedCharacterIds).toEqual([1]);
+
+    useCharactersStore.getState().toggleCharacterSelection(1);
+
+    expect(useCharactersStore.getState().selectedCharacterIds).toEqual([]);
+  });
 });
