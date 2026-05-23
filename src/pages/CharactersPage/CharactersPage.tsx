@@ -22,7 +22,14 @@ function CharactersPage(): JSX.Element {
   // URL state
   const currentPage = getPageFromSearchParams(searchParams);
   const appliedSearchTerm = getSearchTermFromSearchParams(searchParams);
-  const selectedCharacterId = searchParams.get('details');
+  const detailsParam = searchParams.get('details');
+  const selectedCharacterNumericId = Number(detailsParam);
+  const selectedCharacterId =
+    detailsParam &&
+    Number.isInteger(selectedCharacterNumericId) &&
+    selectedCharacterNumericId > 0
+      ? detailsParam
+      : null;
 
   // Zustand state
   const characters = useCharactersStore((state) => state.characters);
@@ -72,10 +79,6 @@ function CharactersPage(): JSX.Element {
     characters.some(
       (character) => String(character.id) === selectedCharacterId
     );
-
-  const selectedCharacterNumericId = selectedCharacterId
-    ? Number(selectedCharacterId)
-    : null;
 
   // Effects
   useEffect(() => {
