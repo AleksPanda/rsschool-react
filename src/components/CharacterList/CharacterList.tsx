@@ -12,7 +12,7 @@ interface CharacterListProps {
   getDetailsPath?: (characterId: number) => string;
   selectedCharacterId?: number | null;
   selectedCharacterIds: number[];
-  onToggleCharacterSelection: (characterId: number) => void;
+  onToggleCharacterSelection: (character: Character) => void;
 }
 
 interface CharacterListContentProps {
@@ -23,7 +23,7 @@ interface CharacterListItemProps {
   character: Character;
   detailsPath?: string;
   isSelected: boolean;
-  onToggleSelection: (characterId: number) => void;
+  onToggleSelection: (character: Character) => void;
 }
 
 function CharacterListContent({
@@ -80,7 +80,7 @@ function CharacterListItem({
           type="checkbox"
           aria-label={`Select ${character.name}`}
           onChange={() => {
-            onToggleSelection(character.id);
+            onToggleSelection(character);
           }}
         />
       </label>

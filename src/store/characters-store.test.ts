@@ -23,7 +23,7 @@ describe('useCharactersStore', () => {
         sourceSearchTerm: '',
         value: '',
       },
-      selectedCharacterIds: [],
+      selectedCharacters: [],
     });
   });
 
@@ -111,12 +111,14 @@ describe('useCharactersStore', () => {
   });
 
   it('toggleCharacterSelection selects and unselects character', () => {
-    useCharactersStore.getState().toggleCharacterSelection(1);
+    useCharactersStore.getState().toggleCharacterSelection(mockCharacter);
 
-    expect(useCharactersStore.getState().selectedCharacterIds).toEqual([1]);
+    expect(useCharactersStore.getState().selectedCharacters).toEqual([
+      mockCharacter,
+    ]);
 
-    useCharactersStore.getState().toggleCharacterSelection(1);
+    useCharactersStore.getState().toggleCharacterSelection(mockCharacter);
 
-    expect(useCharactersStore.getState().selectedCharacterIds).toEqual([]);
+    expect(useCharactersStore.getState().selectedCharacters).toEqual([]);
   });
 });

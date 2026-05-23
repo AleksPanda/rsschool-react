@@ -14,6 +14,7 @@ import { useMediaQuery } from '../../hooks/use-media-query';
 import './CharactersPage.scss';
 import { useCharactersStore } from '../../store/characters-store';
 import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedItemsFlyout';
+import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
 
 function CharactersPage(): JSX.Element {
   // Router hooks
@@ -42,8 +43,11 @@ function CharactersPage(): JSX.Element {
   const searchInputState = useCharactersStore(
     (state) => state.searchInputState
   );
-  const selectedCharacterIds = useCharactersStore(
-    (state) => state.selectedCharacterIds
+  const selectedCharacters = useCharactersStore(
+    (state) => state.selectedCharacters
+  );
+  const selectedCharacterIds = selectedCharacters.map(
+    (character) => character.id
   );
 
   // Zustand actions
@@ -166,7 +170,9 @@ function CharactersPage(): JSX.Element {
     (state) => state.clearSelectedCharacters
   );
 
-  const handleDownloadSelected = (): void => {};
+  const handleDownloadSelected = (): void => {
+    downloadSelectedCharactersCsv(selectedCharacters);
+  };
 
   // Render helpers
   const detailsPanel = selectedCharacterId ? (
@@ -215,7 +221,7 @@ function CharactersPage(): JSX.Element {
             />
 
             <SelectedItemsFlyout
-              selectedCount={selectedCharacterIds.length}
+              selectedCount={selectedCharacters.length}
               onUnselectAll={clearSelectedCharacters}
               onDownload={handleDownloadSelected}
             />

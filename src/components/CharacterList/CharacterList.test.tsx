@@ -80,7 +80,7 @@ describe('CharacterList', () => {
       screen.getByRole('checkbox', { name: /select rick sanchez/i })
     );
 
-    expect(onToggleCharacterSelection).toHaveBeenCalledWith(mockCharacter.id);
+    expect(onToggleCharacterSelection).toHaveBeenCalledWith(mockCharacter);
   });
 
   it('marks checkbox as checked when character is selected', () => {

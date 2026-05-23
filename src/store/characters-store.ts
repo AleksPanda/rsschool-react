@@ -25,10 +25,10 @@ interface CharactersStore {
   errorMessage: string;
   loadedRequestKey: string;
   searchInputState: SearchInputState;
-  selectedCharacterIds: number[];
+  selectedCharacters: Character[];
 
   setSearchInputState: (searchInputState: SearchInputState) => void;
-  toggleCharacterSelection: (characterId: number) => void;
+  toggleCharacterSelection: (character: Character) => void;
   clearSelectedCharacters: () => void;
   loadCharacters: (params: LoadCharactersParams) => Promise<void>;
 }
@@ -44,26 +44,30 @@ export const useCharactersStore = create<CharactersStore>()(
         sourceSearchTerm: '',
         value: '',
       },
-      selectedCharacterIds: [],
+      selectedCharacters: [],
 
       setSearchInputState: (newSearchInputState) => {
         set({ searchInputState: newSearchInputState });
       },
 
-      toggleCharacterSelection: (characterId) => {
+      toggleCharacterSelection: (character) => {
         set((state) => {
-          const isSelected = state.selectedCharacterIds.includes(characterId);
+          const isSelected = state.selectedCharacters.some(
+            (selectedCharacter) => selectedCharacter.id === character.id
+          );
 
           return {
-            selectedCharacterIds: isSelected
-              ? state.selectedCharacterIds.filter((id) => id !== characterId)
-              : [...state.selectedCharacterIds, characterId],
+            selectedCharacters: isSelected
+              ? state.selectedCharacters.filter(
+                  (selectedCharacter) => selectedCharacter.id !== character.id
+                )
+              : [...state.selectedCharacters, character],
           };
         });
       },
 
       clearSelectedCharacters: () => {
-        set({ selectedCharacterIds: [] });
+        set({ selectedCharacters: [] });
       },
 
       loadCharacters: async ({ searchTerm, page, requestKey, signal }) => {
@@ -99,7 +103,7 @@ export const useCharactersStore = create<CharactersStore>()(
     {
       name: 'characters-store',
       partialize: (state) => ({
-        selectedCharacterIds: state.selectedCharacterIds,
+        selectedCharacters: state.selectedCharacters,
       }),
     }
   )
