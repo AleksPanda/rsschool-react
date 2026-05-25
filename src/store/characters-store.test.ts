@@ -23,7 +23,6 @@ describe('useCharactersStore', () => {
         sourceSearchTerm: '',
         value: '',
       },
-      selectedCharacters: [],
     });
   });
 
@@ -108,17 +107,5 @@ describe('useCharactersStore', () => {
       errorMessage: '',
       loadedRequestKey: 'previous-request',
     });
-  });
-
-  it('toggleCharacterSelection selects and unselects character', () => {
-    useCharactersStore.getState().toggleCharacterSelection(mockCharacter);
-
-    expect(useCharactersStore.getState().selectedCharacters).toEqual([
-      mockCharacter,
-    ]);
-
-    useCharactersStore.getState().toggleCharacterSelection(mockCharacter);
-
-    expect(useCharactersStore.getState().selectedCharacters).toEqual([]);
   });
 });

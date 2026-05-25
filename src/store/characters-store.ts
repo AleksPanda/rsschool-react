@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 import { fetchCharacters } from '../api/character-service';
 import type { Character } from '../types';
@@ -25,86 +24,52 @@ interface CharactersStore {
   errorMessage: string;
   loadedRequestKey: string;
   searchInputState: SearchInputState;
-  selectedCharacters: Character[];
 
   setSearchInputState: (searchInputState: SearchInputState) => void;
-  toggleCharacterSelection: (character: Character) => void;
-  clearSelectedCharacters: () => void;
   loadCharacters: (params: LoadCharactersParams) => Promise<void>;
 }
 
-export const useCharactersStore = create<CharactersStore>()(
-  persist(
-    (set) => ({
-      characters: [],
-      totalPages: 0,
-      errorMessage: '',
-      loadedRequestKey: '',
-      searchInputState: {
-        sourceSearchTerm: '',
-        value: '',
-      },
-      selectedCharacters: [],
+export const useCharactersStore = create<CharactersStore>()((set) => ({
+  characters: [],
+  totalPages: 0,
+  errorMessage: '',
+  loadedRequestKey: '',
+  searchInputState: {
+    sourceSearchTerm: '',
+    value: '',
+  },
 
-      setSearchInputState: (newSearchInputState) => {
-        set({ searchInputState: newSearchInputState });
-      },
+  setSearchInputState: (newSearchInputState) => {
+    set({ searchInputState: newSearchInputState });
+  },
 
-      toggleCharacterSelection: (character) => {
-        set((state) => {
-          const isSelected = state.selectedCharacters.some(
-            (selectedCharacter) => selectedCharacter.id === character.id
-          );
+  loadCharacters: async ({ searchTerm, page, requestKey, signal }) => {
+    try {
+      const data = await fetchCharacters(searchTerm, page, signal);
 
-          return {
-            selectedCharacters: isSelected
-              ? state.selectedCharacters.filter(
-                  (selectedCharacter) => selectedCharacter.id !== character.id
-                )
-              : [...state.selectedCharacters, character],
-          };
-        });
-      },
+      if (signal?.aborted) {
+        return;
+      }
 
-      clearSelectedCharacters: () => {
-        set({ selectedCharacters: [] });
-      },
+      set({
+        characters: data.results,
+        totalPages: data.info.pages,
+        errorMessage: '',
+      });
+    } catch {
+      if (signal?.aborted) {
+        return;
+      }
 
-      loadCharacters: async ({ searchTerm, page, requestKey, signal }) => {
-        try {
-          const data = await fetchCharacters(searchTerm, page, signal);
-
-          if (signal?.aborted) {
-            return;
-          }
-
-          set({
-            characters: data.results,
-            totalPages: data.info.pages,
-            errorMessage: '',
-          });
-        } catch {
-          if (signal?.aborted) {
-            return;
-          }
-
-          set({
-            characters: [],
-            totalPages: 0,
-            errorMessage: CHARACTERS_ERROR_MESSAGE,
-          });
-        } finally {
-          if (!signal?.aborted) {
-            set({ loadedRequestKey: requestKey });
-          }
-        }
-      },
-    }),
-    {
-      name: 'characters-store',
-      partialize: (state) => ({
-        selectedCharacters: state.selectedCharacters,
-      }),
+      set({
+        characters: [],
+        totalPages: 0,
+        errorMessage: CHARACTERS_ERROR_MESSAGE,
+      });
+    } finally {
+      if (!signal?.aborted) {
+        set({ loadedRequestKey: requestKey });
+      }
     }
-  )
-);
+  },
+}));

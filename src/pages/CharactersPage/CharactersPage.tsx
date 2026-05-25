@@ -15,6 +15,7 @@ import './CharactersPage.scss';
 import { useCharactersStore } from '../../store/characters-store';
 import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedItemsFlyout';
 import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
+import { useSelectedCharactersStore } from '../../store/selected-characters-store';
 
 function CharactersPage(): JSX.Element {
   // Router hooks
@@ -43,7 +44,7 @@ function CharactersPage(): JSX.Element {
   const searchInputState = useCharactersStore(
     (state) => state.searchInputState
   );
-  const selectedCharacters = useCharactersStore(
+  const selectedCharacters = useSelectedCharactersStore(
     (state) => state.selectedCharacters
   );
   const selectedCharacterIds = selectedCharacters.map(
@@ -55,8 +56,11 @@ function CharactersPage(): JSX.Element {
   const setSearchInputState = useCharactersStore(
     (state) => state.setSearchInputState
   );
-  const toggleCharacterSelection = useCharactersStore(
+  const toggleCharacterSelection = useSelectedCharactersStore(
     (state) => state.toggleCharacterSelection
+  );
+  const clearSelectedCharacters = useSelectedCharactersStore(
+    (state) => state.clearSelectedCharacters
   );
 
   // Local state and other hooks
@@ -165,10 +169,6 @@ function CharactersPage(): JSX.Element {
   const triggerTestError = (): void => {
     setHasTestError(true);
   };
-
-  const clearSelectedCharacters = useCharactersStore(
-    (state) => state.clearSelectedCharacters
-  );
 
   const handleDownloadSelected = (): void => {
     downloadSelectedCharactersCsv(selectedCharacters);
