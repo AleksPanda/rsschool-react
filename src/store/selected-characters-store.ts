@@ -1,5 +1,3 @@
-// src/store/selected-characters-store.ts
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
