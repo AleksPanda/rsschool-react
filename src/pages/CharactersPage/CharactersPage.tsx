@@ -12,10 +12,15 @@ import Pagination from '../../components/Pagination';
 import CharacterDetails from '../../components/CharacterDetails';
 import { useMediaQuery } from '../../hooks/use-media-query';
 import './CharactersPage.scss';
-import { useCharactersStore } from '../../store/characters-store';
 import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedItemsFlyout';
 import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
 import { useSelectedCharactersStore } from '../../store/selected-characters-store';
+import { useCharacters } from '../../hooks/use-characters';
+
+interface SearchInputState {
+  sourceSearchTerm: string;
+  value: string;
+}
 
 function CharactersPage(): JSX.Element {
   // Router hooks
@@ -35,15 +40,6 @@ function CharactersPage(): JSX.Element {
       : null;
 
   // Zustand state
-  const characters = useCharactersStore((state) => state.characters);
-  const totalPages = useCharactersStore((state) => state.totalPages);
-  const errorMessage = useCharactersStore((state) => state.errorMessage);
-  const loadedRequestKey = useCharactersStore(
-    (state) => state.loadedRequestKey
-  );
-  const searchInputState = useCharactersStore(
-    (state) => state.searchInputState
-  );
   const selectedCharacters = useSelectedCharactersStore(
     (state) => state.selectedCharacters
   );
@@ -52,10 +48,6 @@ function CharactersPage(): JSX.Element {
   );
 
   // Zustand actions
-  const loadCharacters = useCharactersStore((state) => state.loadCharacters);
-  const setSearchInputState = useCharactersStore(
-    (state) => state.setSearchInputState
-  );
   const toggleCharacterSelection = useSelectedCharactersStore(
     (state) => state.toggleCharacterSelection
   );
@@ -64,13 +56,19 @@ function CharactersPage(): JSX.Element {
   );
 
   // Local state and other hooks
+  const { characters, totalPages, errorMessage, isLoading } = useCharacters(
+    appliedSearchTerm,
+    currentPage
+  );
+
+  const [searchInputState, setSearchInputState] = useState<SearchInputState>({
+    sourceSearchTerm: appliedSearchTerm,
+    value: appliedSearchTerm,
+  });
   const [hasTestError, setHasTestError] = useState(false);
   const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
 
   // Calculated values
-  // помогает понять, какой именно запрос уже загружен
-  const currentRequestKey = `${currentPage}:${appliedSearchTerm}`;
-  const isLoading = loadedRequestKey !== currentRequestKey;
   const visibleErrorMessage = isLoading ? '' : errorMessage;
 
   const isInputSyncedWithCurrentUrl =
@@ -90,21 +88,6 @@ function CharactersPage(): JSX.Element {
     );
 
   // Effects
-  useEffect(() => {
-    const controller = new AbortController();
-
-    void loadCharacters({
-      searchTerm: appliedSearchTerm,
-      page: currentPage,
-      requestKey: currentRequestKey,
-      signal: controller.signal,
-    });
-
-    return () => {
-      controller.abort();
-    };
-  }, [appliedSearchTerm, currentPage, currentRequestKey, loadCharacters]);
-
   useEffect(() => {
     if (searchParams.has('page')) {
       return;
