@@ -1,0 +1,45 @@
+@use './placeholders' as *;
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-lg);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.app__section {
+  padding: var(--space-xl);
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--section-radius);
+}
+
+.app__section-title {
+  margin: 0 0 var(--space-lg);
+  font-size: 24px;
+}
+
+.app-link {
+  color: var(--color-button);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.app-link:hover {
+  color: var(--color-button-hover);
+}
+
+.app-link:focus-visible {
+  @extend %focus-ring;
+
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: var(--space-xl) var(--space-md);
+  }
+}

@@ -1,12 +1,19 @@
 import type { JSX } from 'react';
 import { Link } from 'react-router-dom';
-import PagePanel from './PagePanel';
+import PagePanel from '../PagePanel';
+import { useTheme } from '../../hooks/use-theme';
 
 interface HeaderProps {
   triggerTestError: () => void;
 }
 
 function Header({ triggerTestError }: HeaderProps): JSX.Element {
+  const { theme, setTheme } = useTheme();
+
+  function handleThemeToggle(): void {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  }
+
   return (
     <PagePanel
       title="Rick and Morty Character Search"
@@ -14,11 +21,20 @@ function Header({ triggerTestError }: HeaderProps): JSX.Element {
       imageSrc="/rick-n-morty.png"
       actions={
         <>
-          <Link className="header-panel__test-error-button" to="/about">
+          <button
+            className="app-button theme-toggle"
+            type="button"
+            onClick={handleThemeToggle}
+            aria-pressed={theme === 'light'}
+          >
+            {theme === 'dark' ? 'Light theme' : 'Dark theme'}
+          </button>
+
+          <Link className="app-button" to="/about">
             About
           </Link>
           <button
-            className="header-panel__test-error-button"
+            className="app-button"
             type="button"
             onClick={triggerTestError}
           >

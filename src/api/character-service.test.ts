@@ -1,35 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchCharacterById, fetchCharacters } from './character-service';
-
-const characterResponse = {
-  info: {
-    count: 1,
-    pages: 1,
-    next: null,
-    prev: null,
-  },
-  results: [
-    {
-      id: 1,
-      name: 'Rick Sanchez',
-      status: 'Alive',
-      species: 'Human',
-      type: '',
-      gender: 'Male',
-      origin: {
-        name: 'Earth (C-137)',
-        url: 'https://rickandmortyapi.com/api/location/1',
-      },
-      location: {
-        name: 'Citadel of Ricks',
-        url: 'https://rickandmortyapi.com/api/location/3',
-      },
-      image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-    },
-  ],
-};
-
-const character = characterResponse.results[0];
+import { mockCharacter } from '../test-utils/mock-character';
+import { mockCharacterResponse } from '../test-utils/mock-character-response';
 
 describe('fetchCharacters', () => {
   beforeEach(() => {
@@ -43,17 +15,17 @@ describe('fetchCharacters', () => {
   it('returns successful API response data', async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve(characterResponse),
+      json: () => Promise.resolve(mockCharacterResponse),
     } as Response);
 
     const result = await fetchCharacters();
-    expect(result).toEqual(characterResponse);
+    expect(result).toEqual(mockCharacterResponse);
   });
 
   it('includes page in the request URL', async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve(characterResponse),
+      json: () => Promise.resolve(mockCharacterResponse),
     } as Response);
 
     await fetchCharacters('', 3);
@@ -71,7 +43,7 @@ describe('fetchCharacters', () => {
   it('includes name in the request URL when search term is provided', async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve(characterResponse),
+      json: () => Promise.resolve(mockCharacterResponse),
     } as Response);
 
     await fetchCharacters('Morty', 1);
@@ -85,7 +57,7 @@ describe('fetchCharacters', () => {
 
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve(characterResponse),
+      json: () => Promise.resolve(mockCharacterResponse),
     } as Response);
 
     await fetchCharacters('', 1, controller.signal);
@@ -125,12 +97,12 @@ describe('fetchCharacterById', () => {
 
     vi.mocked(fetch).mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve(character),
+      json: () => Promise.resolve(mockCharacter),
     } as Response);
 
     const result = await fetchCharacterById('1', controller.signal);
 
-    expect(result).toEqual(character);
+    expect(result).toEqual(mockCharacter);
     expect(fetch).toHaveBeenCalledWith(
       'https://rickandmortyapi.com/api/character/1',
       {

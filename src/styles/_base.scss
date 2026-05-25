@@ -1,0 +1,22 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-width: 320px;
+  font-family: Arial, sans-serif;
+  background-color: var(--color-bg-page);
+  color: var(--color-text-main);
+}
+
+button,
+input {
+  font: inherit;
+}

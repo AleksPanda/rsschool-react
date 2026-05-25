@@ -1,0 +1,85 @@
+@use '../../styles/placeholders' as *;
+
+.selected-items-flyout {
+  position: sticky;
+  bottom: var(--space-md);
+  z-index: 20;
+
+  display: flex;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+
+  width: 90%;
+  box-sizing: border-box;
+  margin-top: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--radius);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-main);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 35%);
+}
+
+.selected-items-flyout__summary {
+  margin: 0;
+  font-weight: 500;
+}
+
+.selected-items-flyout__summary strong {
+  color: var(--color-button);
+}
+
+.selected-items-flyout__actions {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.selected-items-flyout__button {
+  min-height: var(--control-height);
+  padding: var(--space-sm) var(--space-lg);
+
+  border: 1px solid var(--color-button);
+  border-radius: var(--radius);
+
+  background-color: var(--color-button);
+  color: var(--color-bg-page);
+  cursor: pointer;
+}
+
+.selected-items-flyout__button:hover {
+  background-color: var(--color-button-hover);
+  border-color: var(--color-button-hover);
+}
+
+.selected-items-flyout__button:focus-visible {
+  @extend %focus-ring;
+}
+
+.selected-items-flyout__button--secondary {
+  background-color: transparent;
+  color: var(--color-button);
+}
+
+.selected-items-flyout__button--secondary:hover {
+  background-color: var(--color-button);
+  border-color: var(--color-button);
+  color: var(--color-bg-page);
+}
+
+@media (max-width: 640px) {
+  .selected-items-flyout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .selected-items-flyout__actions {
+    flex-direction: column;
+  }
+
+  .selected-items-flyout__button {
+    width: 100%;
+  }
+}

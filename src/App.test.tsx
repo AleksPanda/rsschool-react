@@ -3,59 +3,33 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 
-import type { CharacterResponse } from './types';
+import { mockCharacterResponse } from './test-utils/mock-character-response';
 import { SEARCH_TERM_KEY } from './utils/local-storage';
+import ThemeProvider from './context/theme-provider';
 
 vi.mock('./api/character-service', () => ({
   fetchCharacters: vi.fn(),
 }));
 
-const mockResponse: CharacterResponse = {
-  info: {
-    count: 1,
-    pages: 1,
-    next: null,
-    prev: null,
-  },
-  results: [
-    {
-      id: 1,
-      name: 'Rick Sanchez',
-      status: 'Alive',
-      species: 'Human',
-      type: '',
-      gender: 'Male',
-      origin: {
-        name: 'Earth',
-        url: '',
-      },
-      location: {
-        name: 'Citadel of Ricks',
-        url: '',
-      },
-      image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-    },
-  ],
-};
-
-function renderApp(App: () => React.JSX.Element): void {
+function renderApp(App: () => React.JSX.Element, initialEntries = ['/']): void {
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter initialEntries={initialEntries}>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 }
 
-describe('App localStorage integration', () => {
+describe('App URL state integration', () => {
   beforeEach(() => {
     localStorage.clear();
-    vi.resetModules();
     vi.clearAllMocks();
   });
 
   it('loads characters with empty search term when localStorage is empty', async () => {
     const { fetchCharacters } = await import('./api/character-service');
-    vi.mocked(fetchCharacters).mockResolvedValueOnce(mockResponse);
+    vi.mocked(fetchCharacters).mockResolvedValueOnce(mockCharacterResponse);
 
     const { default: App } = await import('./App');
 
@@ -72,22 +46,20 @@ describe('App localStorage integration', () => {
     expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
   });
 
-  it('reads search term from localStorage on mount', async () => {
-    localStorage.setItem(SEARCH_TERM_KEY, 'Rick');
-
+  it('reads search term and page from URL params on mount', async () => {
     const { fetchCharacters } = await import('./api/character-service');
-    vi.mocked(fetchCharacters).mockResolvedValueOnce(mockResponse);
+    vi.mocked(fetchCharacters).mockResolvedValueOnce(mockCharacterResponse);
 
     const { default: App } = await import('./App');
 
-    renderApp(App);
+    renderApp(App, ['/?page=3&search=Rick']);
 
     expect(screen.getByLabelText(/search characters/i)).toHaveValue('Rick');
 
     await waitFor(() => {
       expect(fetchCharacters).toHaveBeenCalledWith(
         'Rick',
-        1,
+        3,
         expect.any(AbortSignal)
       );
     });
@@ -110,11 +82,11 @@ describe('App localStorage integration', () => {
     ).toBeInTheDocument();
   });
 
-  it('saves search term to localStorage after user search', async () => {
+  it('applies search term from the form without saving it to localStorage', async () => {
     const user = userEvent.setup();
 
     const { fetchCharacters } = await import('./api/character-service');
-    vi.mocked(fetchCharacters).mockResolvedValue(mockResponse);
+    vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
 
     const { default: App } = await import('./App');
 
@@ -128,7 +100,7 @@ describe('App localStorage integration', () => {
     await user.type(input, 'Morty');
     await user.click(screen.getByRole('button', { name: /search/i }));
 
-    expect(localStorage.getItem(SEARCH_TERM_KEY)).toBe('Morty');
+    expect(localStorage.getItem(SEARCH_TERM_KEY)).toBeNull();
 
     await waitFor(() => {
       expect(fetchCharacters).toHaveBeenLastCalledWith(
@@ -143,7 +115,7 @@ describe('App localStorage integration', () => {
     const user = userEvent.setup();
 
     const { fetchCharacters } = await import('./api/character-service');
-    vi.mocked(fetchCharacters).mockResolvedValue(mockResponse);
+    vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
 
     const { default: App } = await import('./App');
 

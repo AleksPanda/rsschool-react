@@ -1,6 +1,7 @@
 import type { JSX } from 'react';
 import { Link } from 'react-router-dom';
-import PagePanel from '../components/PagePanel';
+import PagePanel from '../../components/PagePanel';
+import './AboutPage.scss';
 
 function AboutPage(): JSX.Element {
   return (
@@ -36,7 +37,7 @@ function AboutPage(): JSX.Element {
         </>
       }
       actions={
-        <Link className="header-panel__test-error-button" to="/">
+        <Link className="app-button" to="/">
           Return to the main page
         </Link>
       }

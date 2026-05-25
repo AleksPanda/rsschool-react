@@ -1,4 +1,5 @@
 import type { JSX, ReactNode } from 'react';
+import './PagePanel.scss';
 
 interface PagePanelProps {
   title: string;
