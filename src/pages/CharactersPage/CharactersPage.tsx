@@ -70,6 +70,8 @@ function CharactersPage(): JSX.Element {
 
   // Calculated values
   const visibleErrorMessage = isLoading ? '' : errorMessage;
+  const hasCharacters = characters.length > 0;
+  const showPagination = !visibleErrorMessage && hasCharacters;
 
   const isInputSyncedWithCurrentUrl =
     searchInputState.sourceSearchTerm === appliedSearchTerm;
@@ -209,7 +211,7 @@ function CharactersPage(): JSX.Element {
               onDownload={handleDownloadSelected}
             />
 
-            {!isLoading && !visibleErrorMessage && characters.length > 0 && (
+            {showPagination && (
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

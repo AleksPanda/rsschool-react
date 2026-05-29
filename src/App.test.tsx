@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { mockCharacterResponse } from './test-utils/mock-character-response';
 import { SEARCH_TERM_KEY } from './utils/local-storage';
@@ -11,13 +12,27 @@ vi.mock('./api/character-service', () => ({
   fetchCharacters: vi.fn(),
 }));
 
+function createTestQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+}
+
 function renderApp(App: () => React.JSX.Element, initialEntries = ['/']): void {
+  const queryClient = createTestQueryClient();
+
   render(
-    <ThemeProvider>
-      <MemoryRouter initialEntries={initialEntries}>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter initialEntries={initialEntries}>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

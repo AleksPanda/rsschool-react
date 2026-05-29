@@ -1,7 +1,8 @@
-import { useEffect, useState, type JSX } from 'react';
+import type { JSX } from 'react';
 import { fetchCharacterById } from '../../api/character-service';
-import type { Character } from '../../types';
 import './CharacterDetails.scss';
+import { useQuery } from '@tanstack/react-query';
+import { characterQueryKeys } from '../../api/query-keys';
 
 interface CharacterDetailsProps {
   characterId: string;
@@ -12,6 +13,9 @@ interface CharacterDetailsRowProps {
   label: string;
   value: string | number;
 }
+
+const CHARACTER_DETAILS_ERROR_MESSAGE =
+  'Unable to load character details. Please try again later.';
 
 function CharacterDetailsRow({
   label,
@@ -29,54 +33,21 @@ function CharacterDetails({
   characterId,
   onClose,
 }: CharacterDetailsProps): JSX.Element {
-  const [character, setCharacter] = useState<Character | null>(null);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loadedCharacterId, setLoadedCharacterId] = useState('');
+  const {
+    data: character,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: characterQueryKeys.detail(characterId),
+    queryFn: ({ signal }) => fetchCharacterById(characterId, signal),
+  });
 
-  const detailsRequestId = characterId ?? '';
-  const isLoading = loadedCharacterId !== detailsRequestId;
-  const visibleErrorMessage = isLoading ? '' : errorMessage;
-
-  useEffect(() => {
-    const currentCharacterId = characterId;
-
-    const controller = new AbortController();
-
-    async function loadCharacterDetails(): Promise<void> {
-      try {
-        const data = await fetchCharacterById(
-          currentCharacterId,
-          controller.signal
-        );
-
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setCharacter(data);
-        setErrorMessage('');
-      } catch {
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setCharacter(null);
-        setErrorMessage(
-          'Unable to load character details. Please try again later.'
-        );
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoadedCharacterId(currentCharacterId);
-        }
-      }
-    }
-
-    void loadCharacterDetails();
-
-    return () => {
-      controller.abort();
-    };
-  }, [characterId]);
+  const isLoading = isPending;
+  const visibleErrorMessage = isLoading
+    ? ''
+    : error
+      ? CHARACTER_DETAILS_ERROR_MESSAGE
+      : '';
 
   return (
     <article className="details-panel">

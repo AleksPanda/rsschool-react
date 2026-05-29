@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fetchCharacterById } from '../../api/character-service';
 import { mockCharacter } from '../../test-utils/mock-character';
@@ -9,8 +10,24 @@ vi.mock('../../api/character-service', () => ({
   fetchCharacterById: vi.fn(),
 }));
 
+function createTestQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+}
+
 function renderCharacterDetails(onClose = vi.fn()): void {
-  render(<CharacterDetails characterId="1" onClose={onClose} />);
+  const queryClient = createTestQueryClient();
+
+  render(
+    <QueryClientProvider client={queryClient}>
+      <CharacterDetails characterId="1" onClose={onClose} />
+    </QueryClientProvider>
+  );
 }
 
 describe('CharacterDetails', () => {
