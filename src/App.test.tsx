@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { mockCharacterResponse } from './test-utils/mock-character-response';
 import { SEARCH_TERM_KEY } from './utils/local-storage';
 import ThemeProvider from './context/theme-provider';
+import type { CharacterResponse } from './types';
 
 vi.mock('./api/character-service', () => ({
   fetchCharacters: vi.fn(),
@@ -17,6 +18,7 @@ function createTestQueryClient(): QueryClient {
     defaultOptions: {
       queries: {
         retry: false,
+        staleTime: Infinity,
       },
     },
   });
@@ -34,6 +36,17 @@ function renderApp(App: () => React.JSX.Element, initialEntries = ['/']): void {
       </ThemeProvider>
     </QueryClientProvider>
   );
+}
+
+function createPaginatedResponse(totalPages = 2): CharacterResponse {
+  return {
+    ...mockCharacterResponse,
+    info: {
+      ...mockCharacterResponse.info,
+      count: totalPages,
+      pages: totalPages,
+    },
+  };
 }
 
 describe('App URL state integration', () => {
@@ -153,5 +166,59 @@ describe('App URL state integration', () => {
     });
 
     expect(input).toHaveValue('Morty');
+  });
+
+  it('reuses cached character pages when navigating back', async () => {
+    const user = userEvent.setup();
+    const paginatedResponse = createPaginatedResponse();
+
+    const { fetchCharacters } = await import('./api/character-service');
+    vi.mocked(fetchCharacters).mockResolvedValue(paginatedResponse);
+
+    const { default: App } = await import('./App');
+
+    renderApp(App, ['/?page=1']);
+
+    expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /next/i }));
+
+    await waitFor(() => {
+      expect(fetchCharacters).toHaveBeenLastCalledWith(
+        '',
+        2,
+        expect.any(AbortSignal)
+      );
+    });
+
+    expect(fetchCharacters).toHaveBeenCalledTimes(2);
+
+    await user.click(screen.getByRole('button', { name: /previous/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Page 1 of 2')).toBeInTheDocument();
+    });
+
+    expect(fetchCharacters).toHaveBeenCalledTimes(2);
+  });
+
+  it('refetches the current characters page after manual refresh', async () => {
+    const user = userEvent.setup();
+
+    const { fetchCharacters } = await import('./api/character-service');
+    vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
+
+    const { default: App } = await import('./App');
+
+    renderApp(App);
+
+    expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
+    expect(fetchCharacters).toHaveBeenCalledTimes(1);
+
+    await user.click(screen.getByRole('button', { name: /refresh results/i }));
+
+    await waitFor(() => {
+      expect(fetchCharacters).toHaveBeenCalledTimes(2);
+    });
   });
 });
