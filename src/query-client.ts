@@ -14,6 +14,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: getCacheTtl(),
+      retry: false,
     },
   },
 });
