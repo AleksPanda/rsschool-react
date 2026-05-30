@@ -16,6 +16,8 @@ import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedIt
 import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
 import { useSelectedCharactersStore } from '../../store/selected-characters-store';
 import { useCharacters } from '../../hooks/use-characters';
+import { useQueryClient } from '@tanstack/react-query';
+import { characterQueryKeys } from '../../api/query-keys';
 
 interface SearchInputState {
   sourceSearchTerm: string;
@@ -67,6 +69,7 @@ function CharactersPage(): JSX.Element {
   });
   const [hasTestError, setHasTestError] = useState(false);
   const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
+  const queryClient = useQueryClient();
 
   // Calculated values
   const visibleErrorMessage = isLoading ? '' : errorMessage;
@@ -159,6 +162,12 @@ function CharactersPage(): JSX.Element {
     downloadSelectedCharactersCsv(selectedCharacters);
   };
 
+  const handleRefreshResults = (): void => {
+    void queryClient.invalidateQueries({
+      queryKey: characterQueryKeys.list(appliedSearchTerm, currentPage),
+    });
+  };
+
   // Render helpers
   const detailsPanel = selectedCharacterId ? (
     <CharacterDetails
@@ -184,7 +193,18 @@ function CharactersPage(): JSX.Element {
       </section>
 
       <section className="app__section">
-        <h2 className="app__section-title">Results</h2>
+        <div className="app__section-header">
+          <h2 className="app__section-title">Results</h2>
+
+          <button
+            className="pagination__button results-layout__refresh-button"
+            type="button"
+            onClick={handleRefreshResults}
+          >
+            Refresh results
+          </button>
+        </div>
+
         <div
           className={
             hasDetails

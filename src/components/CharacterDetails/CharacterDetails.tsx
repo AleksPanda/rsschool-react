@@ -1,7 +1,7 @@
 import type { JSX } from 'react';
 import { fetchCharacterById } from '../../api/character-service';
 import './CharacterDetails.scss';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { characterQueryKeys } from '../../api/query-keys';
 
 interface CharacterDetailsProps {
@@ -42,6 +42,14 @@ function CharacterDetails({
     queryFn: ({ signal }) => fetchCharacterById(characterId, signal),
   });
 
+  const queryClient = useQueryClient();
+
+  const handleRefreshDetails = (): void => {
+    void queryClient.invalidateQueries({
+      queryKey: characterQueryKeys.detail(characterId),
+    });
+  };
+
   const isLoading = isPending;
   const visibleErrorMessage = isLoading
     ? ''
@@ -51,14 +59,24 @@ function CharacterDetails({
 
   return (
     <article className="details-panel">
-      <button
-        className="details-panel__close-button"
-        type="button"
-        onClick={onClose}
-        aria-label="Close details"
-      >
-        ×
-      </button>
+      <div className="details-panel__actions">
+        <button
+          className="pagination__button details-panel__refresh-button"
+          type="button"
+          onClick={handleRefreshDetails}
+        >
+          Refresh details
+        </button>
+
+        <button
+          className="details-panel__close-button"
+          type="button"
+          onClick={onClose}
+          aria-label="Close details"
+        >
+          ×
+        </button>
+      </div>
 
       {isLoading && (
         <p className="results-placeholder">

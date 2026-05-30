@@ -2,6 +2,22 @@
   display: block;
 }
 
+.app__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.app__section-header .app__section-title {
+  margin-bottom: 0;
+}
+
+.results-layout__refresh-button {
+  flex-shrink: 0;
+}
+
 .results-layout--with-details {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
@@ -27,5 +43,12 @@
   .results-layout__details {
     position: static;
     order: -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .app__section-header {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
