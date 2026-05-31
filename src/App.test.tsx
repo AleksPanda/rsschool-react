@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -8,6 +8,7 @@ import { mockCharacterResponse } from './test-utils/mock-character-response';
 import { SEARCH_TERM_KEY } from './utils/local-storage';
 import ThemeProvider from './context/theme-provider';
 import type { CharacterResponse } from './types';
+import ErrorBoundary from './components/ErrorBoundary';
 
 vi.mock('./api/character-service', () => ({
   fetchCharacters: vi.fn(),
@@ -29,11 +30,13 @@ function renderApp(App: () => React.JSX.Element, initialEntries = ['/']): void {
 
   render(
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <MemoryRouter initialEntries={initialEntries}>
-          <App />
-        </MemoryRouter>
-      </ThemeProvider>
+      <ErrorBoundary>
+        <ThemeProvider>
+          <MemoryRouter initialEntries={initialEntries}>
+            <App />
+          </MemoryRouter>
+        </ThemeProvider>
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 }
@@ -53,6 +56,10 @@ describe('App URL state integration', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('loads characters with empty search term when localStorage is empty', async () => {
@@ -220,5 +227,25 @@ describe('App URL state integration', () => {
     await waitFor(() => {
       expect(fetchCharacters).toHaveBeenCalledTimes(2);
     });
+  });
+
+  it('shows error boundary fallback when test error button is clicked', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const { fetchCharacters } = await import('./api/character-service');
+    vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
+
+    const { default: App } = await import('./App');
+
+    renderApp(App);
+
+    await user.click(
+      await screen.findByRole('button', { name: /test error boundary/i })
+    );
+
+    expect(
+      screen.getByRole('heading', { name: /something went wrong/i })
+    ).toBeInTheDocument();
   });
 });

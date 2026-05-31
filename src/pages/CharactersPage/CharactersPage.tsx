@@ -102,7 +102,7 @@ function CharactersPage(): JSX.Element {
 
   return (
     <>
-      <Header triggerTestError={triggerTestError} />
+      <Header />
 
       <section className="app__section">
         <SearchPanel
@@ -164,6 +164,9 @@ function CharactersPage(): JSX.Element {
           )}
         </div>
       </section>
+      <button className="app-button" type="button" onClick={triggerTestError}>
+        Test error boundary
+      </button>
     </>
   );
 }
