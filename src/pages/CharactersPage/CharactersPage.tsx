@@ -8,13 +8,12 @@ import { useMediaQuery } from '../../hooks/use-media-query';
 import './CharactersPage.scss';
 import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedItemsFlyout';
 import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
-import { useSelectedCharactersStore } from '../../store/selected-characters-store';
 import { useCharacters } from '../../hooks/use-characters';
 import { useQueryClient } from '@tanstack/react-query';
 import { characterQueryKeys } from '../../api/query-keys';
-import { useShallow } from 'zustand/shallow';
 import { useCharacterUrlState } from '../../hooks/use-character-url-state';
 import { useSearchInput } from '../../hooks/use-search-input';
+import { useSelectedCharacters } from '../../hooks/use-selected-characters';
 
 function CharactersPage(): JSX.Element {
   const {
@@ -29,24 +28,12 @@ function CharactersPage(): JSX.Element {
     getDetailsPath,
   } = useCharacterUrlState();
 
-  // Zustand state
-  const selectedCharacters = useSelectedCharactersStore(
-    (state) => state.selectedCharacters
-  );
-
-  const selectedCharacterIds = useSelectedCharactersStore(
-    useShallow((state) =>
-      state.selectedCharacters.map((character) => character.id)
-    )
-  );
-
-  // Zustand actions
-  const toggleCharacterSelection = useSelectedCharactersStore(
-    (state) => state.toggleCharacterSelection
-  );
-  const clearSelectedCharacters = useSelectedCharactersStore(
-    (state) => state.clearSelectedCharacters
-  );
+  const {
+    selectedCharacters,
+    selectedCharacterIds,
+    toggleCharacterSelection,
+    clearSelectedCharacters,
+  } = useSelectedCharacters();
 
   // Local state and other hooks
   const { characters, totalPages, errorMessage, isLoading } = useCharacters(
