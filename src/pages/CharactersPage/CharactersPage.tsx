@@ -18,6 +18,7 @@ import { useSelectedCharactersStore } from '../../store/selected-characters-stor
 import { useCharacters } from '../../hooks/use-characters';
 import { useQueryClient } from '@tanstack/react-query';
 import { characterQueryKeys } from '../../api/query-keys';
+import { useShallow } from 'zustand/shallow';
 
 interface SearchInputState {
   sourceSearchTerm: string;
@@ -45,8 +46,11 @@ function CharactersPage(): JSX.Element {
   const selectedCharacters = useSelectedCharactersStore(
     (state) => state.selectedCharacters
   );
-  const selectedCharacterIds = selectedCharacters.map(
-    (character) => character.id
+
+  const selectedCharacterIds = useSelectedCharactersStore(
+    useShallow((state) =>
+      state.selectedCharacters.map((character) => character.id)
+    )
   );
 
   // Zustand actions
