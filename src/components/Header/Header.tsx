@@ -8,11 +8,7 @@ interface HeaderProps {
 }
 
 function Header({ triggerTestError }: HeaderProps): JSX.Element {
-  const { theme, setTheme } = useTheme();
-
-  function handleThemeToggle(): void {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  }
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <PagePanel
@@ -24,7 +20,7 @@ function Header({ triggerTestError }: HeaderProps): JSX.Element {
           <button
             className="app-button theme-toggle"
             type="button"
-            onClick={handleThemeToggle}
+            onClick={toggleTheme}
             aria-pressed={theme === 'light'}
           >
             {theme === 'dark' ? 'Light theme' : 'Dark theme'}
