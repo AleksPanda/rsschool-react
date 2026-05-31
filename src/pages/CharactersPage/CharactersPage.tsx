@@ -1,21 +1,25 @@
 import { useState, type JSX } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+
 import Header from '../../components/Header';
 import SearchPanel from '../../components/SearchPanel';
 import CharacterList from '../../components/CharacterList';
 import Pagination from '../../components/Pagination';
 import CharacterDetails from '../../components/CharacterDetails';
-import { useMediaQuery } from '../../hooks/use-media-query';
-import './CharactersPage.scss';
 import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedItemsFlyout';
-import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
-import { useCharacters } from '../../hooks/use-characters';
-import { useQueryClient } from '@tanstack/react-query';
+
 import { characterQueryKeys } from '../../api/query-keys';
+import { useCharacters } from '../../hooks/use-characters';
 import { useCharacterUrlState } from '../../hooks/use-character-url-state';
+import { useMediaQuery } from '../../hooks/use-media-query';
 import { useSearchInput } from '../../hooks/use-search-input';
 import { useSelectedCharacters } from '../../hooks/use-selected-characters';
+import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
+
+import './CharactersPage.scss';
 
 function CharactersPage(): JSX.Element {
+  // URL state
   const {
     currentPage,
     appliedSearchTerm,
@@ -28,6 +32,7 @@ function CharactersPage(): JSX.Element {
     getDetailsPath,
   } = useCharacterUrlState();
 
+  // Selected characters state
   const {
     selectedCharacters,
     selectedCharacterIds,
@@ -35,20 +40,22 @@ function CharactersPage(): JSX.Element {
     clearSelectedCharacters,
   } = useSelectedCharacters();
 
-  // Local state and other hooks
+  // Server state
   const { characters, totalPages, errorMessage, isLoading } = useCharacters(
     appliedSearchTerm,
     currentPage
   );
+  const queryClient = useQueryClient();
 
+  // Search input state
   const { searchInput, handleSearch, handleSearchInputChange } = useSearchInput(
     appliedSearchTerm,
     applySearch
   );
 
+  // Local UI state
   const [hasTestError, setHasTestError] = useState(false);
   const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
-  const queryClient = useQueryClient();
 
   // Calculated values
   const visibleErrorMessage = isLoading ? '' : errorMessage;
