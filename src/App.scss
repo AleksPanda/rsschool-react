@@ -15,8 +15,7 @@
   margin-top: var(--space-5);
 }
 
-.app__actions button,
-.form button {
+.app__actions button {
   min-height: var(--control-block-size);
   border: none;
   border-radius: var(--radius-md);
@@ -27,9 +26,21 @@
   cursor: pointer;
 }
 
-.app__actions button:hover,
-.form button:hover {
+.app__actions button:hover {
   background-color: var(--accent-hover);
+}
+
+.app__submissions {
+  display: grid;
+  gap: var(--space-4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  background-color: var(--subtle);
+}
+
+.app__submissions-list {
+  display: grid;
+  gap: var(--space-4);
 }
 
 .form {
@@ -44,20 +55,59 @@
   font-weight: var(--font-weight-bold);
 }
 
-.form__field input {
+.form__field input,
+.form__field select {
   min-height: var(--control-block-size);
-  box-sizing: border-box;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-md);
   padding-inline: var(--space-3);
-  background-color: var(--bg);
-  color: var(--text-h);
+  background-color: var(--surface);
+  color: var(--text);
   font: inherit;
+  cursor: pointer;
+}
+
+.form__field select {
+  padding-right: var(--space-8);
+  appearance: none;
+  background-image: url('data:image/svg+xml,%3Csvg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4 6L8 10L12 6" stroke="%236B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/svg%3E');
+  background-position: calc(100% - var(--space-4)) 50%;
+  background-repeat: no-repeat;
+  background-size: var(--space-4) var(--space-4);
+}
+
+.form__checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.form__checkbox input,
+.form__checkbox label {
+  cursor: pointer;
+}
+
+.form button {
+  justify-self: start;
+  min-height: var(--control-block-size);
+  border: none;
+  border-radius: var(--radius-md);
+  padding-inline: var(--space-4);
+  background-color: var(--accent);
+  color: var(--text-on-accent);
+  font: inherit;
+  cursor: pointer;
 }
 
 .app__actions button:focus-visible,
-.form button:focus-visible,
-.form__field input:focus-visible {
+.form__field input:focus-visible,
+.form__field select:focus-visible,
+.form__checkbox input:focus-visible,
+.form button:focus-visible {
   outline: var(--focus-ring-width) solid var(--accent);
   outline-offset: var(--focus-ring-offset);
+}
+
+.form button:hover {
+  background-color: var(--accent-hover);
 }

@@ -1,0 +1,45 @@
+.submission-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+}
+
+.submission-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  h3 {
+    margin: 0;
+  }
+
+  span {
+    color: var(--muted);
+    font-size: var(--font-size-sm);
+  }
+}
+
+.submission-card__details {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+
+  div {
+    display: grid;
+    grid-template-columns: var(--card-label-width) 1fr;
+    gap: var(--space-3);
+  }
+
+  dt {
+    color: var(--muted);
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+}
