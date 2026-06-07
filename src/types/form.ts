@@ -11,3 +11,5 @@ export type FormSubmission = {
   acceptedTerms: boolean;
   submittedAt: string;
 };
+
+export type FormValues = Omit<FormSubmission, 'id' | 'source' | 'submittedAt'>;
