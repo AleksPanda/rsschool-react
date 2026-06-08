@@ -115,7 +115,7 @@ function CharacterList({
     return (
       <div className="results-placeholder">
         <p className="loading-text">
-          Loading<span className="loading-dots">...</span>
+          Loading<span className="loading-dots"></span>
         </p>
       </div>
     );

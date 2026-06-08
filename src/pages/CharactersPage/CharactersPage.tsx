@@ -1,5 +1,4 @@
 import { useState, type JSX } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 
 import Header from '../../components/Header';
 import SearchPanel from '../../components/SearchPanel';
@@ -8,7 +7,6 @@ import Pagination from '../../components/Pagination';
 import CharacterDetails from '../../components/CharacterDetails';
 import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedItemsFlyout';
 
-import { characterQueryKeys } from '../../api/query-keys';
 import { useCharacters } from '../../hooks/use-characters';
 import { useCharacterUrlState } from '../../hooks/use-character-url-state';
 import { useMediaQuery } from '../../hooks/use-media-query';
@@ -41,11 +39,14 @@ function CharactersPage(): JSX.Element {
   } = useSelectedCharacters();
 
   // Server state
-  const { characters, totalPages, errorMessage, isLoading } = useCharacters(
-    appliedSearchTerm,
-    currentPage
-  );
-  const queryClient = useQueryClient();
+  const {
+    characters,
+    totalPages,
+    errorMessage,
+    isLoading,
+    isRefreshing,
+    refreshCharacters,
+  } = useCharacters(appliedSearchTerm, currentPage);
 
   // Search input state
   const { searchInput, handleSearch, handleSearchInputChange } = useSearchInput(
@@ -82,12 +83,6 @@ function CharactersPage(): JSX.Element {
     downloadSelectedCharactersCsv(selectedCharacters);
   };
 
-  const handleRefreshResults = (): void => {
-    void queryClient.invalidateQueries({
-      queryKey: characterQueryKeys.list(appliedSearchTerm, currentPage),
-    });
-  };
-
   // Render helpers
   const detailsPanel = selectedCharacterId ? (
     <CharacterDetails
@@ -119,9 +114,9 @@ function CharactersPage(): JSX.Element {
           <button
             className="pagination__button results-layout__refresh-button"
             type="button"
-            onClick={handleRefreshResults}
+            onClick={refreshCharacters}
           >
-            Refresh results
+            {isRefreshing ? 'Refreshing results...' : 'Refresh results'}
           </button>
         </div>
 

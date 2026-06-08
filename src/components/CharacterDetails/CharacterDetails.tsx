@@ -36,11 +36,14 @@ function CharacterDetails({
   const {
     data: character,
     error,
-    isPending,
+    isPending: isInitialLoading,
+    isFetching,
   } = useQuery({
     queryKey: characterQueryKeys.detail(characterId),
     queryFn: ({ signal }) => fetchCharacterById(characterId, signal),
   });
+
+  const isRefreshing = isFetching && !isInitialLoading;
 
   const queryClient = useQueryClient();
 
@@ -50,12 +53,12 @@ function CharacterDetails({
     });
   };
 
-  const isLoading = isPending;
-  const visibleErrorMessage = isLoading
+  const visibleErrorMessage = isInitialLoading
     ? ''
     : error
       ? CHARACTER_DETAILS_ERROR_MESSAGE
       : '';
+  const shouldShowLoader = isFetching;
 
   return (
     <article className="details-panel">
@@ -65,7 +68,7 @@ function CharacterDetails({
           type="button"
           onClick={handleRefreshDetails}
         >
-          Refresh details
+          {isRefreshing ? 'Refreshing details...' : 'Refresh details'}
         </button>
 
         <button
@@ -78,9 +81,9 @@ function CharacterDetails({
         </button>
       </div>
 
-      {isLoading && (
+      {shouldShowLoader && (
         <p className="results-placeholder">
-          Loading details<span className="loading-dots">...</span>
+          Loading details<span className="loading-dots"></span>
         </p>
       )}
 
@@ -90,7 +93,7 @@ function CharacterDetails({
         </p>
       )}
 
-      {!isLoading && !visibleErrorMessage && character && (
+      {!isInitialLoading && !visibleErrorMessage && character && (
         <>
           <img
             className="details-panel__image"

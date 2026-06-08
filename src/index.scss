@@ -20,8 +20,13 @@
 .loading-dots {
   display: inline-block;
   width: 1.5em;
-  overflow: hidden;
   vertical-align: bottom;
+}
+
+.loading-dots::after {
+  content: '...';
+  display: inline-block;
+  overflow: hidden;
   animation: loadingDots 1.2s steps(4, end) infinite;
 }
 
