@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react';
+import type { SubmitEventHandler } from 'react';
 import { GENDER_OPTIONS } from '../../constants/form-options';
 import type { FormSubmission, FormValues } from '../../types/form';
 import { FormField } from './FormField';
@@ -8,7 +8,7 @@ type UncontrolledFormProps = {
 };
 
 export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -22,7 +22,7 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
       ) as FormSubmission['gender'],
       acceptedTerms: formData.get('acceptedTerms') === 'on',
     });
-  }
+  };
 
   return (
     <form className="form" onSubmit={handleSubmit}>
