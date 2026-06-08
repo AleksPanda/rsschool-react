@@ -23,6 +23,13 @@
   }
 }
 
+.submission-card__image {
+  width: var(--submission-image-size);
+  height: var(--submission-image-size);
+  border-radius: var(--radius-round);
+  object-fit: cover;
+}
+
 .submission-card__details {
   display: grid;
   gap: var(--space-2);

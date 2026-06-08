@@ -1,14 +1,19 @@
 import { useForm } from 'react-hook-form';
 import { GENDER_OPTIONS } from '../../constants/form-options';
 import type { FormValues } from '../../types/form';
+import { getImageDataUrl } from '../../utils/image';
 import { FormField } from './FormField';
 
 type ReactHookFormProps = {
   onSubmit: (values: FormValues) => void;
 };
 
+type ReactHookFormFields = Omit<FormValues, 'image'> & {
+  image: FileList;
+};
+
 export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
-  const { handleSubmit, register } = useForm<FormValues>({
+  const { handleSubmit, register } = useForm<ReactHookFormFields>({
     defaultValues: {
       name: '',
       email: '',
@@ -17,8 +22,25 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
     },
   });
 
+  async function handleValidSubmit(values: ReactHookFormFields) {
+    const { image: imageFiles, ...formValues } = values;
+
+    let image = '';
+    try {
+      image = await getImageDataUrl(imageFiles?.[0]);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to read image.');
+      return;
+    }
+
+    onSubmit({
+      ...formValues,
+      image,
+    });
+  }
+
   return (
-    <form className="form" onSubmit={handleSubmit(onSubmit)}>
+    <form className="form" onSubmit={handleSubmit(handleValidSubmit)}>
       <FormField htmlFor="hook-form-name" label="Name">
         <input
           id="hook-form-name"
@@ -68,6 +90,15 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
         />
         <label htmlFor="hook-form-terms">Accept Terms and Conditions</label>
       </div>
+
+      <FormField htmlFor="hook-form-image" label="Profile image">
+        <input
+          id="hook-form-image"
+          type="file"
+          accept="image/png,image/jpeg"
+          {...register('image')}
+        />
+      </FormField>
 
       <button type="submit">Submit</button>
     </form>

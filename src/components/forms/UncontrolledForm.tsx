@@ -1,6 +1,7 @@
 import type { SubmitEventHandler } from 'react';
 import { GENDER_OPTIONS } from '../../constants/form-options';
 import type { FormSubmission, FormValues } from '../../types/form';
+import { getImageDataUrl } from '../../utils/image';
 import { FormField } from './FormField';
 
 type UncontrolledFormProps = {
@@ -8,10 +9,21 @@ type UncontrolledFormProps = {
 };
 
 export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
+    const imageInput = event.currentTarget.elements.namedItem(
+      'image'
+    ) as HTMLInputElement | null;
+
+    let image = '';
+    try {
+      image = await getImageDataUrl(imageInput?.files?.[0]);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to read image.');
+      return;
+    }
 
     onSubmit({
       name: String(formData.get('name') ?? ''),
@@ -21,6 +33,7 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
         formData.get('gender') ?? 'other'
       ) as FormSubmission['gender'],
       acceptedTerms: formData.get('acceptedTerms') === 'on',
+      image,
     });
   };
 
@@ -70,6 +83,15 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
         />
         <label htmlFor="uncontrolled-terms">Accept Terms and Conditions</label>
       </div>
+
+      <FormField htmlFor="uncontrolled-image" label="Profile image">
+        <input
+          id="uncontrolled-image"
+          name="image"
+          type="file"
+          accept="image/png,image/jpeg"
+        />
+      </FormField>
 
       <button type="submit">Submit</button>
     </form>

@@ -9,6 +9,7 @@ export type FormSubmission = {
   email: string;
   gender: Gender;
   acceptedTerms: boolean;
+  image: string;
   submittedAt: string;
 };
 

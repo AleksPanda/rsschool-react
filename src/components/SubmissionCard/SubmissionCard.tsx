@@ -19,6 +19,14 @@ export function SubmissionCard({ submission }: SubmissionCardProps) {
         <span>{SOURCE_LABELS[submission.source]}</span>
       </div>
 
+      {submission.image && (
+        <img
+          className="submission-card__image"
+          src={submission.image}
+          alt={`${submission.name} profile`}
+        />
+      )}
+
       <dl className="submission-card__details">
         <div>
           <dt>Age</dt>

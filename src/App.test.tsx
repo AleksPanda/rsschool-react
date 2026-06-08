@@ -53,26 +53,32 @@ describe('App submissions', () => {
     expect(
       within(dialog).getByLabelText('Accept Terms and Conditions')
     ).toBeInTheDocument();
+    expect(within(dialog).getByLabelText('Profile image')).toBeInTheDocument();
 
     await fillForm(dialog, user, {
       name: 'Aleksandra',
       age: '28',
       email: 'aleksandra@example.com',
       gender: 'female',
+      image: createImageFile(),
     });
     await user.click(within(dialog).getByRole('button', { name: 'Submit' }));
 
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Aleksandra' })).toBeVisible();
+    expect(
+      await screen.findByRole('heading', { name: 'Aleksandra' })
+    ).toBeVisible();
     expect(screen.getByText('aleksandra@example.com')).toBeVisible();
     expect(screen.getByText('Uncontrolled Form')).toBeVisible();
+    expect(screen.getByAltText('Aleksandra profile')).toBeVisible();
     expect(useSubmissionsStore.getState().submissions[0]).toMatchObject({
       name: 'Aleksandra',
       age: 28,
       email: 'aleksandra@example.com',
       gender: 'female',
       acceptedTerms: true,
+      image: 'data:image/png;base64,YXZhdGFy',
     });
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('stores React Hook Form submissions and keeps history', async () => {
@@ -153,6 +159,7 @@ async function submitForm(
     age: string;
     email: string;
     gender: 'female' | 'male' | 'other';
+    image?: File;
   }
 ) {
   await user.click(screen.getByRole('button', { name: triggerName }));
@@ -171,6 +178,7 @@ async function fillForm(
     age: string;
     email: string;
     gender: 'female' | 'male' | 'other';
+    image?: File;
   }
 ) {
   await user.type(within(dialog).getByLabelText('Name'), values.name);
@@ -180,7 +188,20 @@ async function fillForm(
     within(dialog).getByLabelText('Gender'),
     values.gender
   );
+  if (values.image) {
+    const imageInput = within(dialog).getByLabelText(
+      'Profile image'
+    ) as HTMLInputElement;
+
+    await user.upload(imageInput, values.image);
+
+    expect(imageInput.files?.[0]).toBe(values.image);
+  }
   await user.click(
     within(dialog).getByLabelText('Accept Terms and Conditions')
   );
+}
+
+function createImageFile() {
+  return new File(['avatar'], 'avatar.png', { type: 'image/png' });
 }
