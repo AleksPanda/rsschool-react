@@ -1,5 +1,6 @@
 import { type SubmitEventHandler, useState } from 'react';
 import { GENDER_OPTIONS } from '../../constants/form-options';
+import { useCountriesStore } from '../../store/countries-store';
 import type { FormSubmission, FormValues } from '../../types/form';
 import { getImageDataUrl } from '../../utils/image';
 import { FormField } from './FormField';
@@ -10,6 +11,7 @@ type UncontrolledFormProps = {
 };
 
 export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
+  const countries = useCountriesStore((state) => state.countries);
   const [password, setPassword] = useState('');
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
@@ -39,6 +41,7 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
       image,
       password: String(formData.get('password') ?? ''),
       confirmPassword: String(formData.get('confirmPassword') ?? ''),
+      country: String(formData.get('country') ?? ''),
     });
   };
 
@@ -122,6 +125,23 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
           autoComplete="new-password"
           required
         />
+      </FormField>
+
+      <FormField htmlFor="uncontrolled-country" label="Country">
+        <input
+          id="uncontrolled-country"
+          name="country"
+          type="text"
+          list="uncontrolled-country-list"
+          autoComplete="off"
+          required
+        />
+
+        <datalist id="uncontrolled-country-list">
+          {countries.map((country) => (
+            <option value={country} key={country} />
+          ))}
+        </datalist>
       </FormField>
 
       <button type="submit">Submit</button>

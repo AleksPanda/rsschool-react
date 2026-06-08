@@ -58,6 +58,7 @@ describe('App submissions', () => {
     expect(
       within(dialog).getByLabelText('Confirm password')
     ).toBeInTheDocument();
+    expect(within(dialog).getByLabelText('Country')).toBeInTheDocument();
 
     await fillForm(dialog, user, {
       name: 'Aleksandra',
@@ -66,6 +67,7 @@ describe('App submissions', () => {
       gender: 'female',
       image: createImageFile(),
       password: 'Password1!',
+      country: 'Israel',
     });
     await user.click(within(dialog).getByRole('button', { name: 'Submit' }));
 
@@ -74,6 +76,7 @@ describe('App submissions', () => {
     ).toBeVisible();
     expect(screen.getByText('aleksandra@example.com')).toBeVisible();
     expect(screen.getByText('Uncontrolled Form')).toBeVisible();
+    expect(screen.getByText('Israel')).toBeVisible();
     expect(screen.getByAltText('Aleksandra profile')).toBeVisible();
     expect(useSubmissionsStore.getState().submissions[0]).toMatchObject({
       name: 'Aleksandra',
@@ -84,6 +87,7 @@ describe('App submissions', () => {
       image: 'data:image/png;base64,YXZhdGFy',
       password: 'Password1!',
       confirmPassword: 'Password1!',
+      country: 'Israel',
     });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
@@ -99,6 +103,7 @@ describe('App submissions', () => {
       email: 'first@example.com',
       gender: 'male',
       password: 'Firstpass1!',
+      country: 'Germany',
     });
     await submitForm(user, 'Open React Hook Form', {
       name: 'Second User',
@@ -106,12 +111,15 @@ describe('App submissions', () => {
       email: 'second@example.com',
       gender: 'other',
       password: 'Secondpass1!',
+      country: 'France',
     });
 
     expect(screen.getByRole('heading', { name: 'First User' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Second User' })).toBeVisible();
     expect(screen.getByText('first@example.com')).toBeVisible();
     expect(screen.getByText('second@example.com')).toBeVisible();
+    expect(screen.getByText('Germany')).toBeVisible();
+    expect(screen.getByText('France')).toBeVisible();
     expect(screen.getByText('Uncontrolled Form')).toBeVisible();
     expect(screen.getByText('React Hook Form')).toBeVisible();
     expect(useSubmissionsStore.getState().submissions).toHaveLength(2);
@@ -170,6 +178,7 @@ async function submitForm(
     gender: 'female' | 'male' | 'other';
     image?: File;
     password: string;
+    country: string;
   }
 ) {
   await user.click(screen.getByRole('button', { name: triggerName }));
@@ -190,6 +199,7 @@ async function fillForm(
     gender: 'female' | 'male' | 'other';
     image?: File;
     password: string;
+    country: string;
   }
 ) {
   await user.type(within(dialog).getByLabelText('Name'), values.name);
@@ -213,6 +223,7 @@ async function fillForm(
     within(dialog).getByLabelText('Confirm password'),
     values.password
   );
+  await user.type(within(dialog).getByLabelText('Country'), values.country);
   expect(within(dialog).getByText('✓ 1 number')).toBeVisible();
   expect(within(dialog).getByText('✓ 1 uppercase letter')).toBeVisible();
   expect(within(dialog).getByText('✓ 1 lowercase letter')).toBeVisible();

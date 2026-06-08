@@ -12,6 +12,7 @@ export type FormSubmission = {
   image: string;
   password: string;
   confirmPassword: string;
+  country: string;
   submittedAt: string;
 };
 

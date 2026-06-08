@@ -1,5 +1,6 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { GENDER_OPTIONS } from '../../constants/form-options';
+import { useCountriesStore } from '../../store/countries-store';
 import type { FormValues } from '../../types/form';
 import { getImageDataUrl } from '../../utils/image';
 import { FormField } from './FormField';
@@ -14,6 +15,7 @@ type ReactHookFormFields = Omit<FormValues, 'image'> & {
 };
 
 export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
+  const countries = useCountriesStore((state) => state.countries);
   const { control, handleSubmit, register } = useForm<ReactHookFormFields>({
     defaultValues: {
       name: '',
@@ -22,6 +24,7 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
       acceptedTerms: false,
       password: '',
       confirmPassword: '',
+      country: '',
     },
   });
   const password = useWatch({ control, name: 'password' }) ?? '';
@@ -124,6 +127,23 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
           required
           {...register('confirmPassword')}
         />
+      </FormField>
+
+      <FormField htmlFor="hook-form-country" label="Country">
+        <input
+          id="hook-form-country"
+          type="text"
+          list="hook-form-country-list"
+          autoComplete="off"
+          required
+          {...register('country')}
+        />
+
+        <datalist id="hook-form-country-list">
+          {countries.map((country) => (
+            <option value={country} key={country} />
+          ))}
+        </datalist>
       </FormField>
 
       <button type="submit">Submit</button>

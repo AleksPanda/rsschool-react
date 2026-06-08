@@ -47,6 +47,11 @@ export function SubmissionCard({ submission }: SubmissionCardProps) {
           <dt>Terms</dt>
           <dd>{submission.acceptedTerms ? 'Accepted' : 'Not accepted'}</dd>
         </div>
+
+        <div>
+          <dt>Country</dt>
+          <dd>{submission.country}</dd>
+        </div>
       </dl>
     </article>
   );
