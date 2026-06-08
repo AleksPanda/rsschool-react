@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal } from './components/Modal/Modal';
 import { SubmissionCard } from './components/SubmissionCard/SubmissionCard';
 import { ReactHookForm } from './components/forms/ReactHookForm';
@@ -13,18 +13,42 @@ const FORM_TITLES: Record<FormSource, string> = {
   'react-hook-form': 'React Hook Form',
 };
 
+const NEW_SUBMISSION_HIGHLIGHT_DURATION = 3000;
+
 function App() {
   const [activeForm, setActiveForm] = useState<FormSource | null>(null);
+  const [highlightedSubmissionId, setHighlightedSubmissionId] = useState<
+    string | null
+  >(null);
+
   const submissions = useSubmissionsStore((state) => state.submissions);
   const addSubmission = useSubmissionsStore((state) => state.addSubmission);
 
+  useEffect(() => {
+    if (!highlightedSubmissionId) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setHighlightedSubmissionId(null);
+    }, NEW_SUBMISSION_HIGHLIGHT_DURATION);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [highlightedSubmissionId]);
+
   function handleSuccessfulSubmit(source: FormSource, values: FormValues) {
+    const submissionId = crypto.randomUUID();
+
     addSubmission({
-      id: crypto.randomUUID(),
+      id: submissionId,
       source,
       submittedAt: new Date().toISOString(),
       ...values,
     });
+
+    setHighlightedSubmissionId(submissionId);
     setActiveForm(null);
   }
 
@@ -59,7 +83,11 @@ function App() {
         ) : (
           <div className="app__submissions-list">
             {submissions.map((submission) => (
-              <SubmissionCard key={submission.id} submission={submission} />
+              <SubmissionCard
+                isHighlighted={submission.id === highlightedSubmissionId}
+                key={submission.id}
+                submission={submission}
+              />
             ))}
           </div>
         )}

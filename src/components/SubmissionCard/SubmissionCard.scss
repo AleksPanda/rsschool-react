@@ -5,6 +5,18 @@
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius-md);
   background-color: var(--surface);
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.submission-card--highlighted {
+  border-color: var(--accent);
+  outline: var(--focus-ring-width) solid var(--accent);
+  outline-offset: var(--focus-ring-offset);
+  transform: translateY(-2px);
 }
 
 .submission-card__header {

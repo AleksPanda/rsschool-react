@@ -4,6 +4,7 @@ import './SubmissionCard.scss';
 
 type SubmissionCardProps = {
   submission: FormSubmission;
+  isHighlighted?: boolean;
 };
 
 const SOURCE_LABELS: Record<FormSubmission['source'], string> = {
@@ -11,9 +12,16 @@ const SOURCE_LABELS: Record<FormSubmission['source'], string> = {
   'react-hook-form': 'React Hook Form',
 };
 
-export function SubmissionCard({ submission }: SubmissionCardProps) {
+export function SubmissionCard({
+  submission,
+  isHighlighted = false,
+}: SubmissionCardProps) {
+  const cardClassName = isHighlighted
+    ? 'submission-card submission-card--highlighted'
+    : 'submission-card';
+
   return (
-    <article className="submission-card">
+    <article className={cardClassName}>
       <div className="submission-card__header">
         <h3>{submission.name}</h3>
         <span>{SOURCE_LABELS[submission.source]}</span>
