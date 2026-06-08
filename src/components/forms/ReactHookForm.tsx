@@ -1,8 +1,9 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { GENDER_OPTIONS } from '../../constants/form-options';
 import type { FormValues } from '../../types/form';
 import { getImageDataUrl } from '../../utils/image';
 import { FormField } from './FormField';
+import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 
 type ReactHookFormProps = {
   onSubmit: (values: FormValues) => void;
@@ -13,14 +14,17 @@ type ReactHookFormFields = Omit<FormValues, 'image'> & {
 };
 
 export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
-  const { handleSubmit, register } = useForm<ReactHookFormFields>({
+  const { control, handleSubmit, register } = useForm<ReactHookFormFields>({
     defaultValues: {
       name: '',
       email: '',
       gender: 'other',
       acceptedTerms: false,
+      password: '',
+      confirmPassword: '',
     },
   });
+  const password = useWatch({ control, name: 'password' }) ?? '';
 
   async function handleValidSubmit(values: ReactHookFormFields) {
     const { image: imageFiles, ...formValues } = values;
@@ -97,6 +101,28 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
           type="file"
           accept="image/png,image/jpeg"
           {...register('image')}
+        />
+      </FormField>
+
+      <FormField htmlFor="hook-form-password" label="Password">
+        <input
+          id="hook-form-password"
+          type="password"
+          autoComplete="new-password"
+          required
+          {...register('password')}
+        />
+      </FormField>
+
+      <PasswordStrengthIndicator password={password} />
+
+      <FormField htmlFor="hook-form-confirm-password" label="Confirm password">
+        <input
+          id="hook-form-confirm-password"
+          type="password"
+          autoComplete="new-password"
+          required
+          {...register('confirmPassword')}
         />
       </FormField>
 

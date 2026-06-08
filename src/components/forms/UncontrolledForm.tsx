@@ -1,14 +1,17 @@
-import type { SubmitEventHandler } from 'react';
+import { type SubmitEventHandler, useState } from 'react';
 import { GENDER_OPTIONS } from '../../constants/form-options';
 import type { FormSubmission, FormValues } from '../../types/form';
 import { getImageDataUrl } from '../../utils/image';
 import { FormField } from './FormField';
+import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 
 type UncontrolledFormProps = {
   onSubmit: (values: FormValues) => void;
 };
 
 export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
+  const [password, setPassword] = useState('');
+
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
@@ -34,6 +37,8 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
       ) as FormSubmission['gender'],
       acceptedTerms: formData.get('acceptedTerms') === 'on',
       image,
+      password: String(formData.get('password') ?? ''),
+      confirmPassword: String(formData.get('confirmPassword') ?? ''),
     });
   };
 
@@ -90,6 +95,32 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
           name="image"
           type="file"
           accept="image/png,image/jpeg"
+        />
+      </FormField>
+
+      <FormField htmlFor="uncontrolled-password" label="Password">
+        <input
+          id="uncontrolled-password"
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          required
+          onChange={(event) => setPassword(event.currentTarget.value)}
+        />
+      </FormField>
+
+      <PasswordStrengthIndicator password={password} />
+
+      <FormField
+        htmlFor="uncontrolled-confirm-password"
+        label="Confirm password"
+      >
+        <input
+          id="uncontrolled-confirm-password"
+          name="confirmPassword"
+          type="password"
+          autoComplete="new-password"
+          required
         />
       </FormField>
 

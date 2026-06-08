@@ -54,6 +54,10 @@ describe('App submissions', () => {
       within(dialog).getByLabelText('Accept Terms and Conditions')
     ).toBeInTheDocument();
     expect(within(dialog).getByLabelText('Profile image')).toBeInTheDocument();
+    expect(within(dialog).getByLabelText('Password')).toBeInTheDocument();
+    expect(
+      within(dialog).getByLabelText('Confirm password')
+    ).toBeInTheDocument();
 
     await fillForm(dialog, user, {
       name: 'Aleksandra',
@@ -61,6 +65,7 @@ describe('App submissions', () => {
       email: 'aleksandra@example.com',
       gender: 'female',
       image: createImageFile(),
+      password: 'Password1!',
     });
     await user.click(within(dialog).getByRole('button', { name: 'Submit' }));
 
@@ -77,6 +82,8 @@ describe('App submissions', () => {
       gender: 'female',
       acceptedTerms: true,
       image: 'data:image/png;base64,YXZhdGFy',
+      password: 'Password1!',
+      confirmPassword: 'Password1!',
     });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
@@ -91,12 +98,14 @@ describe('App submissions', () => {
       age: '30',
       email: 'first@example.com',
       gender: 'male',
+      password: 'Firstpass1!',
     });
     await submitForm(user, 'Open React Hook Form', {
       name: 'Second User',
       age: '31',
       email: 'second@example.com',
       gender: 'other',
+      password: 'Secondpass1!',
     });
 
     expect(screen.getByRole('heading', { name: 'First User' })).toBeVisible();
@@ -160,6 +169,7 @@ async function submitForm(
     email: string;
     gender: 'female' | 'male' | 'other';
     image?: File;
+    password: string;
   }
 ) {
   await user.click(screen.getByRole('button', { name: triggerName }));
@@ -179,6 +189,7 @@ async function fillForm(
     email: string;
     gender: 'female' | 'male' | 'other';
     image?: File;
+    password: string;
   }
 ) {
   await user.type(within(dialog).getByLabelText('Name'), values.name);
@@ -197,6 +208,15 @@ async function fillForm(
 
     expect(imageInput.files?.[0]).toBe(values.image);
   }
+  await user.type(within(dialog).getByLabelText('Password'), values.password);
+  await user.type(
+    within(dialog).getByLabelText('Confirm password'),
+    values.password
+  );
+  expect(within(dialog).getByText('✓ 1 number')).toBeVisible();
+  expect(within(dialog).getByText('✓ 1 uppercase letter')).toBeVisible();
+  expect(within(dialog).getByText('✓ 1 lowercase letter')).toBeVisible();
+  expect(within(dialog).getByText('✓ 1 special character')).toBeVisible();
   await user.click(
     within(dialog).getByLabelText('Accept Terms and Conditions')
   );

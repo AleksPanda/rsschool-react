@@ -10,6 +10,8 @@ export type FormSubmission = {
   gender: Gender;
   acceptedTerms: boolean;
   image: string;
+  password: string;
+  confirmPassword: string;
   submittedAt: string;
 };
 
