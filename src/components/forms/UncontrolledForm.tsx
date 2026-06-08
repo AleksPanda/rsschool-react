@@ -71,7 +71,12 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit} noValidate>
+    <form
+      aria-label="Uncontrolled form"
+      className="form"
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <FormField htmlFor="uncontrolled-name" label="Name" error={errors.name}>
         <input
           id="uncontrolled-name"
@@ -136,6 +141,7 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
           name="image"
           type="file"
           accept="image/png,image/jpeg"
+          required
         />
       </FormField>
 

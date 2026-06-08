@@ -34,10 +34,6 @@ const baseFormSchema = z
 const imageFileSchema = z
   .custom<File | undefined>()
   .superRefine((file, ctx) => {
-    if (!file) {
-      return;
-    }
-
     const imageError = validateImageFile(file);
 
     if (imageError) {

@@ -57,6 +57,7 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
 
   return (
     <form
+      aria-label="React Hook Form"
       className="form"
       onSubmit={handleSubmit(handleValidSubmit)}
       noValidate
@@ -137,6 +138,7 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
           id="hook-form-image"
           type="file"
           accept="image/png,image/jpeg"
+          required
           {...register('image')}
         />
       </FormField>

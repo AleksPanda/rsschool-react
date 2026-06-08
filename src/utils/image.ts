@@ -3,7 +3,7 @@ const MAX_IMAGE_SIZE = 1024 * 1024;
 
 export function validateImageFile(file?: File): string | null {
   if (!file) {
-    return null;
+    return 'Profile image is required.';
   }
 
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
@@ -18,14 +18,14 @@ export function validateImageFile(file?: File): string | null {
 }
 
 export async function getImageDataUrl(file?: File): Promise<string> {
-  if (!file || file.size === 0) {
-    return '';
-  }
-
   const imageError = validateImageFile(file);
 
   if (imageError) {
     throw new Error(imageError);
+  }
+
+  if (!file) {
+    return '';
   }
 
   return convertFileToBase64(file);
