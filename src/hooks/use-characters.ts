@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react';
-
 import { fetchCharacters } from '../api/character-service';
 import type { Character } from '../types';
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { characterQueryKeys } from '../api/query-keys';
 
 const CHARACTERS_ERROR_MESSAGE =
   'Unable to load characters. Please try again later.';
@@ -11,60 +15,35 @@ interface UseCharactersResult {
   totalPages: number;
   errorMessage: string;
   isLoading: boolean;
+  isRefreshing: boolean;
+  refreshCharacters: () => void;
 }
 
 export function useCharacters(
   searchTerm: string,
   page: number
 ): UseCharactersResult {
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loadedRequestKey, setLoadedRequestKey] = useState('');
+  const queryClient = useQueryClient();
+  const queryKey = characterQueryKeys.list(searchTerm, page);
 
-  const currentRequestKey = `${page}:${searchTerm}`;
-  const isLoading = loadedRequestKey !== currentRequestKey;
+  const { data, error, isPending, isFetching, isPlaceholderData } = useQuery({
+    queryFn: ({ signal }) => fetchCharacters(searchTerm, page, signal),
+    queryKey,
+    placeholderData: keepPreviousData,
+  });
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function loadCharacters(): Promise<void> {
-      try {
-        const data = await fetchCharacters(searchTerm, page, controller.signal);
-
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setCharacters(data.results);
-        setTotalPages(data.info.pages);
-        setErrorMessage('');
-      } catch {
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setCharacters([]);
-        setTotalPages(0);
-        setErrorMessage(CHARACTERS_ERROR_MESSAGE);
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoadedRequestKey(currentRequestKey);
-        }
-      }
-    }
-
-    void loadCharacters();
-
-    return () => {
-      controller.abort();
-    };
-  }, [searchTerm, page, currentRequestKey]);
+  const refreshCharacters = (): void => {
+    void queryClient.invalidateQueries({
+      queryKey,
+    });
+  };
 
   return {
-    characters,
-    totalPages,
-    errorMessage,
-    isLoading,
+    characters: data?.results ?? [],
+    totalPages: data?.info.pages ?? 0,
+    errorMessage: error ? CHARACTERS_ERROR_MESSAGE : '',
+    isLoading: isPending || (isFetching && isPlaceholderData),
+    isRefreshing: isFetching && !isPending && !isPlaceholderData,
+    refreshCharacters,
   };
 }

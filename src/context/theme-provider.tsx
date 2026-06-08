@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useState, type JSX, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type JSX,
+  type ReactNode,
+} from 'react';
 
 import {
   DEFAULT_THEME,
@@ -30,12 +37,16 @@ function ThemeProvider({ children }: ThemeProviderProps): JSX.Element {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
+  const toggleTheme = useCallback(() => {
+    setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
+  }, []);
+
   const value = useMemo(
     () => ({
       theme,
-      setTheme,
+      toggleTheme,
     }),
-    [theme]
+    [theme, toggleTheme]
   );
 
   return (

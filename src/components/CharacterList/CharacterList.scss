@@ -103,6 +103,7 @@
 
 @media (max-width: 640px) {
   .character-list__item {
+    position: relative;
     flex-direction: column;
     gap: var(--space-md);
   }
@@ -112,9 +113,26 @@
     gap: var(--space-md);
   }
 
+  .character-list__content {
+    padding-right: calc(20px + var(--space-md));
+  }
+
   .character-list__image {
     align-self: flex-start;
-    width: 96px;
-    height: 96px;
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    margin: 0 auto var(--space-lg);
+  }
+
+  .character-list__name,
+  .character-list__description {
+    grid-template-columns: none;
+  }
+
+  .character-list__checkbox-label {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
   }
 }

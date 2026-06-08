@@ -1,84 +1,67 @@
-import { useEffect, useState, type JSX } from 'react';
+import { useState, type JSX } from 'react';
+
 import Header from '../../components/Header';
 import SearchPanel from '../../components/SearchPanel';
 import CharacterList from '../../components/CharacterList';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  createCharacterSearchParams,
-  getPageFromSearchParams,
-  getSearchTermFromSearchParams,
-} from '../../utils/url-search-params';
 import Pagination from '../../components/Pagination';
 import CharacterDetails from '../../components/CharacterDetails';
-import { useMediaQuery } from '../../hooks/use-media-query';
-import './CharactersPage.scss';
 import SelectedItemsFlyout from '../../components/SelectedItemsFlyout/SelectedItemsFlyout';
-import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
-import { useSelectedCharactersStore } from '../../store/selected-characters-store';
-import { useCharacters } from '../../hooks/use-characters';
 
-interface SearchInputState {
-  sourceSearchTerm: string;
-  value: string;
-}
+import { useCharacters } from '../../hooks/use-characters';
+import { useCharacterUrlState } from '../../hooks/use-character-url-state';
+import { useMediaQuery } from '../../hooks/use-media-query';
+import { useSearchInput } from '../../hooks/use-search-input';
+import { useSelectedCharacters } from '../../hooks/use-selected-characters';
+import { downloadSelectedCharactersCsv } from '../../utils/download-selected-characters';
+
+import './CharactersPage.scss';
 
 function CharactersPage(): JSX.Element {
-  // Router hooks
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-
   // URL state
-  const currentPage = getPageFromSearchParams(searchParams);
-  const appliedSearchTerm = getSearchTermFromSearchParams(searchParams);
-  const detailsParam = searchParams.get('details');
-  const selectedCharacterNumericId = Number(detailsParam);
-  const selectedCharacterId =
-    detailsParam &&
-    Number.isInteger(selectedCharacterNumericId) &&
-    selectedCharacterNumericId > 0
-      ? detailsParam
-      : null;
-
-  // Zustand state
-  const selectedCharacters = useSelectedCharactersStore(
-    (state) => state.selectedCharacters
-  );
-  const selectedCharacterIds = selectedCharacters.map(
-    (character) => character.id
-  );
-
-  // Zustand actions
-  const toggleCharacterSelection = useSelectedCharactersStore(
-    (state) => state.toggleCharacterSelection
-  );
-  const clearSelectedCharacters = useSelectedCharactersStore(
-    (state) => state.clearSelectedCharacters
-  );
-
-  // Local state and other hooks
-  const { characters, totalPages, errorMessage, isLoading } = useCharacters(
+  const {
+    currentPage,
     appliedSearchTerm,
-    currentPage
+    selectedCharacterId,
+    selectedCharacterNumericId,
+    hasDetails,
+    applySearch,
+    closeDetails,
+    changePage,
+    getDetailsPath,
+  } = useCharacterUrlState();
+
+  // Selected characters state
+  const {
+    selectedCharacters,
+    selectedCharacterIds,
+    toggleCharacterSelection,
+    clearSelectedCharacters,
+  } = useSelectedCharacters();
+
+  // Server state
+  const {
+    characters,
+    totalPages,
+    errorMessage,
+    isLoading,
+    isRefreshing,
+    refreshCharacters,
+  } = useCharacters(appliedSearchTerm, currentPage);
+
+  // Search input state
+  const { searchInput, handleSearch, handleSearchInputChange } = useSearchInput(
+    appliedSearchTerm,
+    applySearch
   );
 
-  const [searchInputState, setSearchInputState] = useState<SearchInputState>({
-    sourceSearchTerm: appliedSearchTerm,
-    value: appliedSearchTerm,
-  });
+  // Local UI state
   const [hasTestError, setHasTestError] = useState(false);
   const isMobileDetailsLayout = useMediaQuery('(max-width: 850px)');
 
   // Calculated values
   const visibleErrorMessage = isLoading ? '' : errorMessage;
-
-  const isInputSyncedWithCurrentUrl =
-    searchInputState.sourceSearchTerm === appliedSearchTerm;
-
-  const searchInput = isInputSyncedWithCurrentUrl
-    ? searchInputState.value
-    : appliedSearchTerm;
-
-  const hasDetails = Boolean(selectedCharacterId);
+  const hasCharacters = characters.length > 0;
+  const showPagination = !visibleErrorMessage && hasCharacters;
 
   const hasInlineDetails =
     isMobileDetailsLayout &&
@@ -87,66 +70,9 @@ function CharactersPage(): JSX.Element {
       (character) => String(character.id) === selectedCharacterId
     );
 
-  // Effects
-  useEffect(() => {
-    if (searchParams.has('page')) {
-      return;
-    }
-
-    setSearchParams(createCharacterSearchParams(1, appliedSearchTerm), {
-      replace: true,
-    });
-  }, [appliedSearchTerm, searchParams, setSearchParams]);
-
   // Handlers
-  const handleCloseDetails = (): void => {
-    const params = new URLSearchParams(searchParams);
-
-    params.delete('details');
-    setSearchParams(params);
-  };
-
-  const handleSearch = (): void => {
-    const searchTerm = searchInput.trim();
-
-    setSearchInputState({
-      sourceSearchTerm: searchTerm,
-      value: searchTerm,
-    });
-
-    if (searchTerm === appliedSearchTerm && currentPage === 1) {
-      return;
-    }
-
-    const params = createCharacterSearchParams(1, searchTerm);
-
-    navigate({
-      pathname: '/',
-      search: `?${params.toString()}`,
-    });
-  };
-
-  const handleSearchInputChange = (value: string): void => {
-    setSearchInputState({
-      sourceSearchTerm: appliedSearchTerm,
-      value,
-    });
-  };
-
   const handlePageChange = (page: number): void => {
-    if (page === currentPage || page < 1 || page > totalPages) {
-      return;
-    }
-
-    setSearchParams(createCharacterSearchParams(page, appliedSearchTerm));
-  };
-
-  const getDetailsPath = (characterId: number): string => {
-    const params = new URLSearchParams(searchParams);
-
-    params.set('details', String(characterId));
-
-    return `/?${params.toString()}`;
+    changePage(page, totalPages);
   };
 
   const triggerTestError = (): void => {
@@ -161,7 +87,7 @@ function CharactersPage(): JSX.Element {
   const detailsPanel = selectedCharacterId ? (
     <CharacterDetails
       characterId={selectedCharacterId}
-      onClose={handleCloseDetails}
+      onClose={closeDetails}
     />
   ) : null;
 
@@ -171,7 +97,7 @@ function CharactersPage(): JSX.Element {
 
   return (
     <>
-      <Header triggerTestError={triggerTestError} />
+      <Header />
 
       <section className="app__section">
         <SearchPanel
@@ -182,7 +108,18 @@ function CharactersPage(): JSX.Element {
       </section>
 
       <section className="app__section">
-        <h2 className="app__section-title">Results</h2>
+        <div className="app__section-header">
+          <h2 className="app__section-title">Results</h2>
+
+          <button
+            className="pagination__button results-layout__refresh-button"
+            type="button"
+            onClick={refreshCharacters}
+          >
+            {isRefreshing ? 'Refreshing results...' : 'Refresh results'}
+          </button>
+        </div>
+
         <div
           className={
             hasDetails
@@ -209,7 +146,7 @@ function CharactersPage(): JSX.Element {
               onDownload={handleDownloadSelected}
             />
 
-            {!isLoading && !visibleErrorMessage && characters.length > 0 && (
+            {showPagination && (
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -222,6 +159,9 @@ function CharactersPage(): JSX.Element {
           )}
         </div>
       </section>
+      <button className="app-button" type="button" onClick={triggerTestError}>
+        Test error boundary
+      </button>
     </>
   );
 }

@@ -1,7 +1,8 @@
-import { useEffect, useState, type JSX } from 'react';
+import type { JSX } from 'react';
 import { fetchCharacterById } from '../../api/character-service';
-import type { Character } from '../../types';
 import './CharacterDetails.scss';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { characterQueryKeys } from '../../api/query-keys';
 
 interface CharacterDetailsProps {
   characterId: string;
@@ -12,6 +13,9 @@ interface CharacterDetailsRowProps {
   label: string;
   value: string | number;
 }
+
+const CHARACTER_DETAILS_ERROR_MESSAGE =
+  'Unable to load character details. Please try again later.';
 
 function CharacterDetailsRow({
   label,
@@ -29,69 +33,57 @@ function CharacterDetails({
   characterId,
   onClose,
 }: CharacterDetailsProps): JSX.Element {
-  const [character, setCharacter] = useState<Character | null>(null);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loadedCharacterId, setLoadedCharacterId] = useState('');
+  const {
+    data: character,
+    error,
+    isPending: isInitialLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: characterQueryKeys.detail(characterId),
+    queryFn: ({ signal }) => fetchCharacterById(characterId, signal),
+  });
 
-  const detailsRequestId = characterId ?? '';
-  const isLoading = loadedCharacterId !== detailsRequestId;
-  const visibleErrorMessage = isLoading ? '' : errorMessage;
+  const isRefreshing = isFetching && !isInitialLoading;
 
-  useEffect(() => {
-    const currentCharacterId = characterId;
+  const queryClient = useQueryClient();
 
-    const controller = new AbortController();
+  const handleRefreshDetails = (): void => {
+    void queryClient.invalidateQueries({
+      queryKey: characterQueryKeys.detail(characterId),
+    });
+  };
 
-    async function loadCharacterDetails(): Promise<void> {
-      try {
-        const data = await fetchCharacterById(
-          currentCharacterId,
-          controller.signal
-        );
-
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setCharacter(data);
-        setErrorMessage('');
-      } catch {
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setCharacter(null);
-        setErrorMessage(
-          'Unable to load character details. Please try again later.'
-        );
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoadedCharacterId(currentCharacterId);
-        }
-      }
-    }
-
-    void loadCharacterDetails();
-
-    return () => {
-      controller.abort();
-    };
-  }, [characterId]);
+  const visibleErrorMessage = isInitialLoading
+    ? ''
+    : error
+      ? CHARACTER_DETAILS_ERROR_MESSAGE
+      : '';
+  const shouldShowLoader = isFetching;
 
   return (
     <article className="details-panel">
-      <button
-        className="details-panel__close-button"
-        type="button"
-        onClick={onClose}
-        aria-label="Close details"
-      >
-        ×
-      </button>
+      <div className="details-panel__actions">
+        <button
+          className="pagination__button details-panel__refresh-button"
+          type="button"
+          onClick={handleRefreshDetails}
+        >
+          {isRefreshing ? 'Refreshing details...' : 'Refresh details'}
+        </button>
 
-      {isLoading && (
+        <button
+          className="details-panel__close-button"
+          type="button"
+          onClick={onClose}
+          aria-label="Close details"
+        >
+          ×
+        </button>
+      </div>
+
+      {shouldShowLoader && (
         <p className="results-placeholder">
-          Loading details<span className="loading-dots">...</span>
+          Loading details<span className="loading-dots"></span>
         </p>
       )}
 
@@ -101,7 +93,7 @@ function CharacterDetails({
         </p>
       )}
 
-      {!isLoading && !visibleErrorMessage && character && (
+      {!isInitialLoading && !visibleErrorMessage && character && (
         <>
           <img
             className="details-panel__image"

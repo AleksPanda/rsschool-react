@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { RenderResult } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fetchCharacterById } from '../../api/character-service';
 import { mockCharacter } from '../../test-utils/mock-character';
@@ -9,8 +11,26 @@ vi.mock('../../api/character-service', () => ({
   fetchCharacterById: vi.fn(),
 }));
 
-function renderCharacterDetails(onClose = vi.fn()): void {
-  render(<CharacterDetails characterId="1" onClose={onClose} />);
+function createTestQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        staleTime: Infinity,
+      },
+    },
+  });
+}
+
+function renderCharacterDetails(
+  onClose = vi.fn(),
+  queryClient = createTestQueryClient()
+): RenderResult {
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <CharacterDetails characterId="1" onClose={onClose} />
+    </QueryClientProvider>
+  );
 }
 
 describe('CharacterDetails', () => {
@@ -58,5 +78,44 @@ describe('CharacterDetails', () => {
     await user.click(screen.getByRole('button', { name: /close details/i }));
 
     expect(handleClose).toHaveBeenCalledOnce();
+  });
+
+  it('reuses cached character details after remounting', async () => {
+    const queryClient = createTestQueryClient();
+    vi.mocked(fetchCharacterById).mockResolvedValue(mockCharacter);
+
+    const firstRender = renderCharacterDetails(vi.fn(), queryClient);
+
+    expect(
+      await screen.findByRole('heading', { name: 'Rick Sanchez' })
+    ).toBeInTheDocument();
+    expect(fetchCharacterById).toHaveBeenCalledTimes(1);
+
+    firstRender.unmount();
+
+    renderCharacterDetails(vi.fn(), queryClient);
+
+    expect(
+      await screen.findByRole('heading', { name: 'Rick Sanchez' })
+    ).toBeInTheDocument();
+    expect(fetchCharacterById).toHaveBeenCalledTimes(1);
+  });
+
+  it('refetches character details after manual refresh', async () => {
+    const user = userEvent.setup();
+
+    vi.mocked(fetchCharacterById).mockResolvedValue(mockCharacter);
+
+    renderCharacterDetails();
+
+    expect(
+      await screen.findByRole('heading', { name: 'Rick Sanchez' })
+    ).toBeInTheDocument();
+    expect(fetchCharacterById).toHaveBeenCalledTimes(1);
+
+    await user.click(screen.getByRole('button', { name: /refresh details/i }));
+
+    await screen.findByRole('heading', { name: 'Rick Sanchez' });
+    expect(fetchCharacterById).toHaveBeenCalledTimes(2);
   });
 });

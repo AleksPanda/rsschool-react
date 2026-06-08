@@ -4,7 +4,7 @@ type Theme = 'light' | 'dark';
 
 interface ThemeContextValue {
   theme: Theme;
-  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
 }
 
 const THEME_STORAGE_KEY = 'rick-and-morty-theme';
