@@ -1,0 +1,64 @@
+.submission-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface);
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.submission-card--highlighted {
+  border-color: var(--accent);
+  outline: var(--focus-ring-width) solid var(--accent);
+  outline-offset: var(--focus-ring-offset);
+  transform: translateY(-2px);
+}
+
+.submission-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  h3 {
+    margin: 0;
+  }
+
+  span {
+    color: var(--muted);
+    font-size: var(--font-size-sm);
+  }
+}
+
+.submission-card__image {
+  width: var(--submission-image-size);
+  height: var(--submission-image-size);
+  border-radius: var(--radius-round);
+  object-fit: cover;
+}
+
+.submission-card__details {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+
+  div {
+    display: grid;
+    grid-template-columns: var(--card-label-width) 1fr;
+    gap: var(--space-3);
+  }
+
+  dt {
+    color: var(--muted);
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+}
