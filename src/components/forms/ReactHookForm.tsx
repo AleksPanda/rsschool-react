@@ -1,8 +1,10 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { GENDER_OPTIONS } from '../../constants/form-options';
 import { useCountriesStore } from '../../store/countries-store';
 import type { FormValues } from '../../types/form';
 import { getImageDataUrl } from '../../utils/image';
+import { createReactHookFormSchema } from '../../validation/form-validation';
 import { FormField } from './FormField';
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 
@@ -11,12 +13,17 @@ type ReactHookFormProps = {
 };
 
 type ReactHookFormFields = Omit<FormValues, 'image'> & {
-  image: FileList;
+  image: FileList | undefined;
 };
 
 export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
   const countries = useCountriesStore((state) => state.countries);
-  const { control, handleSubmit, register } = useForm<ReactHookFormFields>({
+  const {
+    control,
+    formState: { errors, isValid },
+    handleSubmit,
+    register,
+  } = useForm<ReactHookFormFields>({
     defaultValues: {
       name: '',
       email: '',
@@ -26,6 +33,8 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
       confirmPassword: '',
       country: '',
     },
+    mode: 'onChange',
+    resolver: zodResolver(createReactHookFormSchema(countries)),
   });
   const password = useWatch({ control, name: 'password' }) ?? '';
 
@@ -47,8 +56,16 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
   }
 
   return (
-    <form className="form" onSubmit={handleSubmit(handleValidSubmit)}>
-      <FormField htmlFor="hook-form-name" label="Name">
+    <form
+      className="form"
+      onSubmit={handleSubmit(handleValidSubmit)}
+      noValidate
+    >
+      <FormField
+        htmlFor="hook-form-name"
+        label="Name"
+        error={errors.name?.message}
+      >
         <input
           id="hook-form-name"
           type="text"
@@ -59,7 +76,11 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="hook-form-age" label="Age">
+      <FormField
+        htmlFor="hook-form-age"
+        label="Age"
+        error={errors.age?.message}
+      >
         <input
           id="hook-form-age"
           type="number"
@@ -68,7 +89,11 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="hook-form-email" label="Email">
+      <FormField
+        htmlFor="hook-form-email"
+        label="Email"
+        error={errors.email?.message}
+      >
         <input
           id="hook-form-email"
           type="email"
@@ -78,7 +103,11 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="hook-form-gender" label="Gender">
+      <FormField
+        htmlFor="hook-form-gender"
+        label="Gender"
+        error={errors.gender?.message}
+      >
         <select id="hook-form-gender" required {...register('gender')}>
           {GENDER_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -97,8 +126,13 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
         />
         <label htmlFor="hook-form-terms">Accept Terms and Conditions</label>
       </div>
+      <p className="form__error">{errors.acceptedTerms?.message}</p>
 
-      <FormField htmlFor="hook-form-image" label="Profile image">
+      <FormField
+        htmlFor="hook-form-image"
+        label="Profile image"
+        error={errors.image?.message}
+      >
         <input
           id="hook-form-image"
           type="file"
@@ -107,7 +141,11 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="hook-form-password" label="Password">
+      <FormField
+        htmlFor="hook-form-password"
+        label="Password"
+        error={errors.password?.message}
+      >
         <input
           id="hook-form-password"
           type="password"
@@ -119,7 +157,11 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
 
       <PasswordStrengthIndicator password={password} />
 
-      <FormField htmlFor="hook-form-confirm-password" label="Confirm password">
+      <FormField
+        htmlFor="hook-form-confirm-password"
+        label="Confirm password"
+        error={errors.confirmPassword?.message}
+      >
         <input
           id="hook-form-confirm-password"
           type="password"
@@ -129,7 +171,11 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="hook-form-country" label="Country">
+      <FormField
+        htmlFor="hook-form-country"
+        label="Country"
+        error={errors.country?.message}
+      >
         <input
           id="hook-form-country"
           type="text"
@@ -146,7 +192,9 @@ export function ReactHookForm({ onSubmit }: ReactHookFormProps) {
         </datalist>
       </FormField>
 
-      <button type="submit">Submit</button>
+      <button type="submit" disabled={!isValid}>
+        Submit
+      </button>
     </form>
   );
 }

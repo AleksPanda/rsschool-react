@@ -1,7 +1,11 @@
 const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg'];
 const MAX_IMAGE_SIZE = 1024 * 1024;
 
-export function validateImageFile(file: File): string | null {
+export function validateImageFile(file?: File): string | null {
+  if (!file) {
+    return null;
+  }
+
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
     return 'Only PNG and JPEG images are allowed.';
   }

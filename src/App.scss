@@ -76,6 +76,14 @@
   background-size: var(--space-4) var(--space-4);
 }
 
+.form__error {
+  min-height: var(--error-block-size);
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+}
+
 .form__checkbox {
   display: flex;
   align-items: center;
@@ -124,4 +132,9 @@
 
 .form button:hover {
   background-color: var(--accent-hover);
+}
+
+.form button:disabled {
+  background-color: var(--muted);
+  cursor: not-allowed;
 }

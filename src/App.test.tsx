@@ -125,6 +125,81 @@ describe('App submissions', () => {
     expect(useSubmissionsStore.getState().submissions).toHaveLength(2);
   });
 
+  it('validates the uncontrolled form only after submit', async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole('button', { name: 'Open Uncontrolled Form' })
+    );
+
+    const dialog = screen.getByRole('dialog', {
+      name: 'Uncontrolled Form',
+    });
+
+    expect(
+      within(dialog).queryByText('Name must start with an uppercase letter.')
+    ).not.toBeInTheDocument();
+
+    await user.type(within(dialog).getByLabelText('Name'), 'aleksandra');
+    await user.type(within(dialog).getByLabelText('Age'), '-1');
+    await user.type(within(dialog).getByLabelText('Email'), 'broken-email');
+    await user.type(within(dialog).getByLabelText('Password'), 'Password1!');
+    await user.type(
+      within(dialog).getByLabelText('Confirm password'),
+      'Password2!'
+    );
+    await user.type(within(dialog).getByLabelText('Country'), 'Atlantis');
+    await user.click(
+      within(dialog).getByLabelText('Accept Terms and Conditions')
+    );
+    await user.click(within(dialog).getByRole('button', { name: 'Submit' }));
+
+    expect(
+      within(dialog).getByText('Name must start with an uppercase letter.')
+    ).toBeVisible();
+    expect(within(dialog).getByText('Age must not be negative.')).toBeVisible();
+    expect(
+      within(dialog).getByText('Email must contain one @ and a dotted domain.')
+    ).toBeVisible();
+    expect(within(dialog).getByText('Passwords must match.')).toBeVisible();
+    expect(
+      within(dialog).getByText('Country must be selected from the list.')
+    ).toBeVisible();
+    expect(useSubmissionsStore.getState().submissions).toHaveLength(0);
+  });
+
+  it('disables React Hook Form submit until the form is valid', async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole('button', { name: 'Open React Hook Form' })
+    );
+
+    const dialog = screen.getByRole('dialog', {
+      name: 'React Hook Form',
+    });
+    const submitButton = within(dialog).getByRole('button', {
+      name: 'Submit',
+    });
+
+    expect(submitButton).toBeDisabled();
+
+    await fillForm(dialog, user, {
+      name: 'Valid',
+      age: '22',
+      email: 'valid@example.com',
+      gender: 'other',
+      password: 'Password1!',
+      country: 'Israel',
+    });
+
+    expect(submitButton).toBeEnabled();
+  });
+
   it('closes a modal with Escape and returns focus to the trigger', async () => {
     const user = userEvent.setup();
 

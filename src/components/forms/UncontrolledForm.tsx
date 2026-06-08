@@ -3,6 +3,10 @@ import { GENDER_OPTIONS } from '../../constants/form-options';
 import { useCountriesStore } from '../../store/countries-store';
 import type { FormSubmission, FormValues } from '../../types/form';
 import { getImageDataUrl } from '../../utils/image';
+import {
+  createUncontrolledFormSchema,
+  getValidationErrors,
+} from '../../validation/form-validation';
 import { FormField } from './FormField';
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 
@@ -13,6 +17,7 @@ type UncontrolledFormProps = {
 export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
   const countries = useCountriesStore((state) => state.countries);
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -21,33 +26,53 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
     const imageInput = event.currentTarget.elements.namedItem(
       'image'
     ) as HTMLInputElement | null;
-
-    let image = '';
-    try {
-      image = await getImageDataUrl(imageInput?.files?.[0]);
-    } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to read image.');
-      return;
-    }
-
-    onSubmit({
+    const age = Number(formData.get('age'));
+    const formValues = {
       name: String(formData.get('name') ?? ''),
-      age: Number(formData.get('age') ?? 0),
+      age,
       email: String(formData.get('email') ?? ''),
       gender: String(
         formData.get('gender') ?? 'other'
       ) as FormSubmission['gender'],
       acceptedTerms: formData.get('acceptedTerms') === 'on',
-      image,
       password: String(formData.get('password') ?? ''),
       confirmPassword: String(formData.get('confirmPassword') ?? ''),
       country: String(formData.get('country') ?? ''),
+      imageFile: imageInput?.files?.[0],
+    };
+    const result =
+      createUncontrolledFormSchema(countries).safeParse(formValues);
+
+    if (!result.success) {
+      setErrors(getValidationErrors(result.error));
+      return;
+    }
+
+    let image = '';
+    try {
+      image = await getImageDataUrl(result.data.imageFile);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to read image.');
+      return;
+    }
+
+    setErrors({});
+    onSubmit({
+      name: result.data.name,
+      age: result.data.age,
+      email: result.data.email,
+      gender: result.data.gender,
+      acceptedTerms: result.data.acceptedTerms,
+      image,
+      password: result.data.password,
+      confirmPassword: result.data.confirmPassword,
+      country: result.data.country,
     });
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <FormField htmlFor="uncontrolled-name" label="Name">
+    <form className="form" onSubmit={handleSubmit} noValidate>
+      <FormField htmlFor="uncontrolled-name" label="Name" error={errors.name}>
         <input
           id="uncontrolled-name"
           name="name"
@@ -58,11 +83,15 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="uncontrolled-age" label="Age">
+      <FormField htmlFor="uncontrolled-age" label="Age" error={errors.age}>
         <input id="uncontrolled-age" name="age" type="number" required />
       </FormField>
 
-      <FormField htmlFor="uncontrolled-email" label="Email">
+      <FormField
+        htmlFor="uncontrolled-email"
+        label="Email"
+        error={errors.email}
+      >
         <input
           id="uncontrolled-email"
           name="email"
@@ -72,7 +101,11 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="uncontrolled-gender" label="Gender">
+      <FormField
+        htmlFor="uncontrolled-gender"
+        label="Gender"
+        error={errors.gender}
+      >
         <select id="uncontrolled-gender" name="gender" required>
           {GENDER_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -91,8 +124,13 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
         />
         <label htmlFor="uncontrolled-terms">Accept Terms and Conditions</label>
       </div>
+      <p className="form__error">{errors.acceptedTerms}</p>
 
-      <FormField htmlFor="uncontrolled-image" label="Profile image">
+      <FormField
+        htmlFor="uncontrolled-image"
+        label="Profile image"
+        error={errors.imageFile}
+      >
         <input
           id="uncontrolled-image"
           name="image"
@@ -101,7 +139,11 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="uncontrolled-password" label="Password">
+      <FormField
+        htmlFor="uncontrolled-password"
+        label="Password"
+        error={errors.password}
+      >
         <input
           id="uncontrolled-password"
           name="password"
@@ -117,6 +159,7 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
       <FormField
         htmlFor="uncontrolled-confirm-password"
         label="Confirm password"
+        error={errors.confirmPassword}
       >
         <input
           id="uncontrolled-confirm-password"
@@ -127,7 +170,11 @@ export function UncontrolledForm({ onSubmit }: UncontrolledFormProps) {
         />
       </FormField>
 
-      <FormField htmlFor="uncontrolled-country" label="Country">
+      <FormField
+        htmlFor="uncontrolled-country"
+        label="Country"
+        error={errors.country}
+      >
         <input
           id="uncontrolled-country"
           name="country"
