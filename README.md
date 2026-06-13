@@ -75,3 +75,9 @@ Build the project:
 ```bash
 npm run build
 ```
+
+## Results Summary
+
+The average render duration decreased from 357.9 ms to 58.5 ms, which is an 83.7% improvement.
+
+Detailed measurements and screenshots are available in `PERFORMANCE.md`.
