@@ -1,0 +1,19 @@
+{
+  "Header": {
+    "title": "Rick and Morty Character Search",
+    "description": "Search for characters from the Rick and Morty API.",
+    "about": "About",
+    "imageAlt": "Rick and Morty"
+  },
+  "HomePage": {
+    "title": "Character search",
+    "description": "The server-rendered character search will appear here."
+  },
+  "LanguageSwitcher": {
+    "label": "Language"
+  },
+  "ThemeToggle": {
+    "light": "Light theme",
+    "dark": "Dark theme"
+  }
+}

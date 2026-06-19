@@ -1,0 +1,19 @@
+{
+  "Header": {
+    "title": "Поиск персонажей Рика и Морти",
+    "description": "Ищите персонажей с помощью API Rick and Morty.",
+    "about": "О проекте",
+    "imageAlt": "Рик и Морти"
+  },
+  "HomePage": {
+    "title": "Поиск персонажей",
+    "description": "Здесь появится серверный поиск персонажей."
+  },
+  "LanguageSwitcher": {
+    "label": "Язык"
+  },
+  "ThemeToggle": {
+    "light": "Светлая тема",
+    "dark": "Тёмная тема"
+  }
+}

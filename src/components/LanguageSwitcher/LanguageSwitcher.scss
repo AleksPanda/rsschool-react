@@ -1,0 +1,40 @@
+.language-switcher {
+  display: inline-flex;
+  min-height: var(--control-height);
+  overflow: hidden;
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--radius);
+}
+
+.language-switcher__button {
+  min-width: var(--control-height);
+  border: 0;
+  border-right: 1px solid var(--color-border-muted);
+  background: transparent;
+  color: var(--color-text-main);
+  cursor: pointer;
+}
+
+.language-switcher__button:last-child {
+  border-right: 0;
+}
+
+.language-switcher__button[aria-pressed='true'] {
+  background-color: var(--color-button);
+  color: var(--color-bg-page);
+}
+
+.language-switcher__button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+@media (max-width: 640px) {
+  .language-switcher {
+    width: 100%;
+  }
+
+  .language-switcher__button {
+    flex: 1;
+  }
+}

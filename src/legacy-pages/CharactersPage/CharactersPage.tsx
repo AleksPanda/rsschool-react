@@ -1,6 +1,6 @@
 import { useState, type JSX } from 'react';
 
-import Header from '../../components/Header';
+import LegacyHeader from './LegacyHeader';
 import SearchPanel from '../../components/SearchPanel';
 import CharacterList from '../../components/CharacterList';
 import Pagination from '../../components/Pagination';
@@ -97,7 +97,7 @@ function CharactersPage(): JSX.Element {
 
   return (
     <>
-      <Header />
+      <LegacyHeader />
 
       <section className="app__section">
         <SearchPanel

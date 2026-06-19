@@ -1,33 +1,37 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import type { JSX } from 'react';
-import { Link } from 'react-router-dom';
-import PagePanel from '../PagePanel';
-import { useTheme } from '../../hooks/use-theme';
+
+import { Link } from '../../i18n/navigation';
+import LanguageSwitcher from '../LanguageSwitcher';
+import ThemeToggle from '../ThemeToggle';
+import './Header.scss';
 
 function Header(): JSX.Element {
-  const { theme, toggleTheme } = useTheme();
+  const t = useTranslations('Header');
 
   return (
-    <PagePanel
-      title="Rick and Morty Character Search"
-      description="Search for characters from the Rick and Morty API."
-      imageSrc="/rick-n-morty.png"
-      actions={
-        <>
-          <button
-            className="app-button theme-toggle"
-            type="button"
-            onClick={toggleTheme}
-            aria-pressed={theme === 'light'}
-          >
-            {theme === 'dark' ? 'Light theme' : 'Dark theme'}
-          </button>
+    <header className="app__section header-panel">
+      <div className="header-panel__content">
+        <h1 className="header-panel__title">{t('title')}</h1>
+        <p className="header-panel__description">{t('description')}</p>
 
-          <Link className="app-button" to="/about">
-            About
+        <div className="header-panel__actions">
+          <ThemeToggle />
+          <LanguageSwitcher />
+          <Link className="app-button" href="/about">
+            {t('about')}
           </Link>
-        </>
-      }
-    />
+        </div>
+      </div>
+
+      <img
+        className="header-panel__image"
+        src="/rick-n-morty.png"
+        alt={t('imageAlt')}
+      />
+    </header>
   );
 }
 

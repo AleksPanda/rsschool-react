@@ -1,8 +1,8 @@
 import type { JSX } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import CharactersPage from './pages/CharactersPage';
-import AboutPage from './pages/AboutPage';
-import NotFoundPage from './pages/NotFoundPage';
+import CharactersPage from './legacy-pages/CharactersPage';
+import AboutPage from './legacy-pages/AboutPage';
+import NotFoundPage from './legacy-pages/NotFoundPage';
 import AppLayout from './components/AppLayout';
 
 function App(): JSX.Element {
