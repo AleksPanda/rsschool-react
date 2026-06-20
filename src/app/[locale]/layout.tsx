@@ -12,6 +12,9 @@ import '../globals.scss';
 export const metadata: Metadata = {
   title: 'Rick and Morty Character Search',
   description: 'Search for characters from the Rick and Morty API.',
+  icons: {
+    icon: '/rick-favicon.png',
+  },
 };
 
 interface LocaleLayoutProps {
