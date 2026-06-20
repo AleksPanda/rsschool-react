@@ -13,7 +13,9 @@
     "name": "Имя:",
     "description": "Описание:",
     "location": "Локация:",
-    "viewDetails": "Открыть информацию о персонаже {name}"
+    "viewDetails": "Открыть информацию о персонаже {name}",
+    "select": "Выбрать персонажа {name}",
+    "unselect": "Отменить выбор персонажа {name}"
   },
   "CharacterDetails": {
     "close": "Закрыть информацию о персонаже",
@@ -67,6 +69,14 @@
     "label": "Поиск персонажей",
     "placeholder": "Введите имя персонажа...",
     "submit": "Найти"
+  },
+  "SelectedCharactersPanel": {
+    "actionsLabel": "Действия с выбранными персонажами",
+    "selectedCount": "Выбрано персонажей: {count}",
+    "unselectAll": "Снять выбор",
+    "download": "Скачать",
+    "downloading": "Скачивание...",
+    "error": "Не удалось скачать CSV. Попробуйте ещё раз."
   },
   "ThemeToggle": {
     "light": "Светлая тема",

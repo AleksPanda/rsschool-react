@@ -13,7 +13,9 @@
     "name": "Name:",
     "description": "Description:",
     "location": "Location:",
-    "viewDetails": "View details for {name}"
+    "viewDetails": "View details for {name}",
+    "select": "Select {name}",
+    "unselect": "Unselect {name}"
   },
   "CharacterDetails": {
     "close": "Close details",
@@ -67,6 +69,14 @@
     "label": "Search characters",
     "placeholder": "Type a character name...",
     "submit": "Search"
+  },
+  "SelectedCharactersPanel": {
+    "actionsLabel": "Selected characters actions",
+    "selectedCount": "Selected characters: {count}",
+    "unselectAll": "Unselect all",
+    "download": "Download",
+    "downloading": "Downloading...",
+    "error": "Unable to download CSV. Please try again."
   },
   "ThemeToggle": {
     "light": "Light theme",

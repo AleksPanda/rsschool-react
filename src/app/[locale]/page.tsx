@@ -5,6 +5,7 @@ import ServerCharacterList from '@/components/CharacterList/CharacterList.server
 import ServerPagination from '@/components/Pagination/Pagination.server';
 import RefreshButton from '@/components/RefreshButton';
 import SearchForm from '@/components/SearchForm';
+import SelectedCharactersPanel from '@/components/SelectedCharactersPanel';
 import {
   fetchCharacterById,
   fetchCharacters,
@@ -90,19 +91,21 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 <p>{t('loadError')}</p>
               </div>
             ) : (
-              <>
-                <ServerCharacterList
-                  characters={characterResponse.results}
-                  currentPage={currentPage}
-                  searchTerm={searchTerm}
-                />
+              <ServerCharacterList
+                characters={characterResponse.results}
+                currentPage={currentPage}
+                searchTerm={searchTerm}
+              />
+            )}
 
-                <ServerPagination
-                  currentPage={currentPage}
-                  totalPages={characterResponse.info.pages}
-                  searchTerm={searchTerm}
-                />
-              </>
+            <SelectedCharactersPanel />
+
+            {characterResponse && (
+              <ServerPagination
+                currentPage={currentPage}
+                totalPages={characterResponse.info.pages}
+                searchTerm={searchTerm}
+              />
             )}
           </div>
 

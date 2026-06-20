@@ -3,6 +3,7 @@ import type { JSX } from 'react';
 
 import { Link } from '../../i18n/navigation';
 import type { Character } from '../../types';
+import CharacterSelectionCheckbox from './CharacterSelectionCheckbox';
 
 interface CharacterCardProps {
   character: Character;
@@ -61,6 +62,8 @@ function CharacterCard({
           height={96}
         />
       </Link>
+
+      <CharacterSelectionCheckbox character={character} />
     </li>
   );
 }
