@@ -63,6 +63,11 @@
     "next": "Next",
     "status": "Page {currentPage} of {totalPages}"
   },
+  "SearchForm": {
+    "label": "Search characters",
+    "placeholder": "Type a character name...",
+    "submit": "Search"
+  },
   "ThemeToggle": {
     "light": "Light theme",
     "dark": "Dark theme"

@@ -4,6 +4,7 @@ import ServerCharacterDetails from '@/components/CharacterDetails/CharacterDetai
 import ServerCharacterList from '@/components/CharacterList/CharacterList.server';
 import ServerPagination from '@/components/Pagination/Pagination.server';
 import RefreshButton from '@/components/RefreshButton';
+import SearchForm from '@/components/SearchForm';
 import {
   fetchCharacterById,
   fetchCharacters,
@@ -54,6 +55,10 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   return (
     <>
+      <section className="app__section">
+        <SearchForm defaultValue={searchTerm} />
+      </section>
+
       <section
         className="app__section"
         data-page={currentPage}

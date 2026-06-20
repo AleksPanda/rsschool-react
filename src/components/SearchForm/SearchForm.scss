@@ -1,0 +1,56 @@
+@use '../../styles/placeholders' as *;
+
+.search-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.search-panel__label {
+  font-size: 24px;
+}
+
+.search-panel__controls {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.search-panel__input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--control-height);
+  padding: var(--space-md);
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--radius);
+}
+
+.search-panel__button {
+  min-width: 120px;
+  min-height: var(--control-height);
+  padding: var(--space-md) var(--space-lg);
+  border: none;
+  border-radius: var(--radius);
+  background-color: var(--color-button);
+  color: var(--color-bg-page);
+  cursor: pointer;
+}
+
+.search-panel__button:hover {
+  outline: 1px solid var(--color-button);
+  outline-offset: 1px;
+  background-color: var(--color-button-hover);
+}
+
+.search-panel__button:focus-visible {
+  @extend %focus-ring;
+}
+
+@media (max-width: 640px) {
+  .search-panel__controls {
+    flex-direction: column;
+  }
+
+  .search-panel__button {
+    width: 100%;
+  }
+}

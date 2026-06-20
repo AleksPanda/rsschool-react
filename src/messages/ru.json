@@ -63,6 +63,11 @@
     "next": "Вперёд",
     "status": "Страница {currentPage} из {totalPages}"
   },
+  "SearchForm": {
+    "label": "Поиск персонажей",
+    "placeholder": "Введите имя персонажа...",
+    "submit": "Найти"
+  },
   "ThemeToggle": {
     "light": "Светлая тема",
     "dark": "Тёмная тема"
