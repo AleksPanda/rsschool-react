@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
@@ -17,10 +18,12 @@ export default async function NotFoundPage() {
         </Link>
       </div>
 
-      <img
+      <Image
         className="not-found-page__image"
         src="/jerry.png"
         alt={t('imageAlt')}
+        width={180}
+        height={180}
       />
     </section>
   );

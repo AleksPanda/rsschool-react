@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import type { JSX } from 'react';
 
@@ -26,10 +27,13 @@ function Header(): JSX.Element {
         </div>
       </div>
 
-      <img
+      <Image
         className="header-panel__image"
         src="/rick-n-morty.png"
         alt={t('imageAlt')}
+        width={180}
+        height={140}
+        preload
       />
     </header>
   );

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
@@ -50,7 +51,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 target="_blank"
                 rel="noreferrer"
               >
-                <img
+                <Image
                   className={
                     iconClassName
                       ? `about-page__social-icon ${iconClassName}`
@@ -59,6 +60,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   src={icon}
                   alt=""
                   aria-hidden="true"
+                  width={22}
+                  height={22}
                 />
                 <span>{label}</span>
               </a>
