@@ -1,0 +1,83 @@
+{
+  "AboutPage": {
+    "title": "О проекте",
+    "intro": "Привет! Меня зовут Александра. Я frontend-разработчик и в основном работаю с React, TypeScript, JavaScript и современными инструментами frontend-разработки.",
+    "socialPrompt": "Мои профили",
+    "tagline": "Давайте создавать понятные и полезные приложения.",
+    "coursePrefix": "Это приложение создано в рамках",
+    "courseLink": "курса React от The Rolling Scopes School",
+    "courseSuffix": ".",
+    "returnHome": "Вернуться на главную"
+  },
+  "CharacterCard": {
+    "name": "Имя:",
+    "description": "Описание:",
+    "location": "Локация:",
+    "viewDetails": "Открыть информацию о персонаже {name}",
+    "select": "Выбрать персонажа {name}",
+    "unselect": "Отменить выбор персонажа {name}"
+  },
+  "CharacterDetails": {
+    "close": "Закрыть информацию о персонаже",
+    "refresh": "Обновить информацию",
+    "refreshing": "Обновление информации...",
+    "loadError": "Не удалось загрузить информацию о персонаже. Попробуйте ещё раз позже.",
+    "status": "Статус",
+    "species": "Вид",
+    "type": "Тип",
+    "gender": "Пол",
+    "origin": "Происхождение",
+    "location": "Локация",
+    "episodes": "Эпизоды",
+    "episodeCount": "{count, plural, one {# эпизод} few {# эпизода} many {# эпизодов} other {# эпизода}}"
+  },
+  "Header": {
+    "title": "Поиск персонажей Рика и Морти",
+    "description": "Ищите персонажей с помощью API Rick and Morty.",
+    "about": "О проекте",
+    "imageAlt": "Рик и Морти"
+  },
+  "HomePage": {
+    "title": "Результаты",
+    "loadError": "Не удалось загрузить персонажей. Попробуйте ещё раз позже.",
+    "detailsTitle": "Информация о персонаже",
+    "refreshResults": "Обновить результаты",
+    "refreshingResults": "Обновление результатов...",
+    "testError": "Проверить обработку ошибки"
+  },
+  "ErrorPage": {
+    "title": "Что-то пошло не так",
+    "description": "Произошла непредвиденная ошибка.",
+    "retry": "Попробовать снова"
+  },
+  "LanguageSwitcher": {
+    "label": "Язык"
+  },
+  "NotFoundPage": {
+    "title": "404: Страница не найдена",
+    "description": "Страница, которую вы ищете, не существует.",
+    "returnHome": "Вернуться на главную",
+    "imageAlt": "Джерри Смит"
+  },
+  "Pagination": {
+    "label": "Пагинация",
+    "previous": "Назад",
+    "next": "Вперёд",
+    "status": "Страница {currentPage} из {totalPages}"
+  },
+  "SearchForm": {
+    "label": "Поиск персонажей",
+    "placeholder": "Введите имя персонажа...",
+    "submit": "Найти"
+  },
+  "SelectedCharactersPanel": {
+    "actionsLabel": "Действия с выбранными персонажами",
+    "selectedCount": "Выбрано персонажей: {count}",
+    "unselectAll": "Снять выбор",
+    "download": "Скачать"
+  },
+  "ThemeToggle": {
+    "light": "Светлая тема",
+    "dark": "Тёмная тема"
+  }
+}

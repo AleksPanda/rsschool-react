@@ -1,16 +1,34 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { NextIntlClientProvider } from 'next-intl';
+import type { AnchorHTMLAttributes, ReactNode } from 'react';
+import { describe, expect, it, vi } from 'vitest';
+
 import Header from './Header';
-import { MemoryRouter } from 'react-router-dom';
 import ThemeProvider from '../../context/theme-provider';
+import messages from '../../messages/en.json';
+
+interface LinkMockProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  children: ReactNode;
+  href: string;
+}
+
+vi.mock('../../i18n/navigation', () => ({
+  Link: ({ children, href, ...props }: LinkMockProps) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+  usePathname: () => '/',
+  useRouter: () => ({ replace: vi.fn() }),
+}));
 
 function renderHeader(): void {
   render(
-    <ThemeProvider>
-      <MemoryRouter>
+    <NextIntlClientProvider locale="en" messages={messages}>
+      <ThemeProvider>
         <Header />
-      </MemoryRouter>
-    </ThemeProvider>
+      </ThemeProvider>
+    </NextIntlClientProvider>
   );
 }
 
@@ -30,5 +48,15 @@ describe('Header', () => {
     expect(
       screen.getByRole('button', { name: /light theme|dark theme/i })
     ).toBeInTheDocument();
+  });
+
+  it('renders language controls', () => {
+    renderHeader();
+
+    expect(screen.getByRole('button', { name: 'EN' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByRole('button', { name: 'RU' })).toBeInTheDocument();
   });
 });

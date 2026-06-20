@@ -1,0 +1,44 @@
+.not-found-page {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+}
+
+.not-found-page__content {
+  min-width: 0;
+}
+
+.not-found-page__description {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.not-found-page__link {
+  margin-top: var(--space-lg);
+}
+
+.not-found-page__image {
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .not-found-page {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .not-found-page__image {
+    width: 140px;
+    height: 140px;
+    align-self: center;
+  }
+
+  .not-found-page__link {
+    width: 100%;
+  }
+}

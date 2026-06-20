@@ -1,0 +1,83 @@
+{
+  "AboutPage": {
+    "title": "About",
+    "intro": "Hi! My name is Aleksandra. I am a frontend developer working mostly with React, TypeScript, JavaScript, and modern frontend tooling.",
+    "socialPrompt": "Find me online",
+    "tagline": "Let's build clean and useful applications.",
+    "coursePrefix": "This application was created as part of",
+    "courseLink": "The Rolling Scopes School React course",
+    "courseSuffix": ".",
+    "returnHome": "Return to the main page"
+  },
+  "CharacterCard": {
+    "name": "Name:",
+    "description": "Description:",
+    "location": "Location:",
+    "viewDetails": "View details for {name}",
+    "select": "Select {name}",
+    "unselect": "Unselect {name}"
+  },
+  "CharacterDetails": {
+    "close": "Close details",
+    "refresh": "Refresh details",
+    "refreshing": "Refreshing details...",
+    "loadError": "Unable to load character details. Please try again later.",
+    "status": "Status",
+    "species": "Species",
+    "type": "Type",
+    "gender": "Gender",
+    "origin": "Origin",
+    "location": "Location",
+    "episodes": "Episodes",
+    "episodeCount": "{count, plural, one {# episode} other {# episodes}}"
+  },
+  "Header": {
+    "title": "Rick and Morty Character Search",
+    "description": "Search for characters from the Rick and Morty API.",
+    "about": "About",
+    "imageAlt": "Rick and Morty"
+  },
+  "HomePage": {
+    "title": "Results",
+    "loadError": "Unable to load characters. Please try again later.",
+    "detailsTitle": "Character details",
+    "refreshResults": "Refresh results",
+    "refreshingResults": "Refreshing results...",
+    "testError": "Test error boundary"
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred.",
+    "retry": "Try again"
+  },
+  "LanguageSwitcher": {
+    "label": "Language"
+  },
+  "NotFoundPage": {
+    "title": "404: Page not found",
+    "description": "The page you are looking for does not exist.",
+    "returnHome": "Return to the main page",
+    "imageAlt": "Jerry Smith"
+  },
+  "Pagination": {
+    "label": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "status": "Page {currentPage} of {totalPages}"
+  },
+  "SearchForm": {
+    "label": "Search characters",
+    "placeholder": "Type a character name...",
+    "submit": "Search"
+  },
+  "SelectedCharactersPanel": {
+    "actionsLabel": "Selected characters actions",
+    "selectedCount": "Selected characters: {count}",
+    "unselectAll": "Unselect all",
+    "download": "Download"
+  },
+  "ThemeToggle": {
+    "light": "Light theme",
+    "dark": "Dark theme"
+  }
+}

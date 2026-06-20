@@ -1,8 +1,9 @@
+'use client';
+
 import {
   useCallback,
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type JSX,
   type ReactNode,
 } from 'react';
@@ -18,28 +19,39 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
-function getInitialTheme(): Theme {
+const THEME_CHANGE_EVENT = 'theme-change';
+
+function getThemeSnapshot(): Theme {
   const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
 
-  if (savedTheme === 'light' || savedTheme === 'dark') {
-    return savedTheme;
-  }
+  return savedTheme === 'light' || savedTheme === 'dark'
+    ? savedTheme
+    : DEFAULT_THEME;
+}
 
-  return DEFAULT_THEME;
+function subscribeToTheme(onStoreChange: () => void): () => void {
+  window.addEventListener('storage', onStoreChange);
+  window.addEventListener(THEME_CHANGE_EVENT, onStoreChange);
+
+  return () => {
+    window.removeEventListener('storage', onStoreChange);
+    window.removeEventListener(THEME_CHANGE_EVENT, onStoreChange);
+  };
 }
 
 function ThemeProvider({ children }: ThemeProviderProps): JSX.Element {
-  // lazy initial state
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
-  }, [theme]);
+  const theme = useSyncExternalStore(
+    subscribeToTheme,
+    getThemeSnapshot,
+    () => DEFAULT_THEME
+  );
 
   const toggleTheme = useCallback(() => {
-    setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
-  }, []);
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
+  }, [theme]);
 
   const value = useMemo(
     () => ({
@@ -50,7 +62,11 @@ function ThemeProvider({ children }: ThemeProviderProps): JSX.Element {
   );
 
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      <div className="theme-root" data-theme={theme}>
+        {children}
+      </div>
+    </ThemeContext.Provider>
   );
 }
 
