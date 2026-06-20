@@ -24,6 +24,8 @@ function CharacterCard({
 }: CharacterCardProps): JSX.Element {
   return (
     <li className="character-list__item">
+      <CharacterSelectionCheckbox character={character} />
+
       <Link
         className="character-list__link"
         href={detailsHref}
@@ -62,8 +64,6 @@ function CharacterCard({
           height={96}
         />
       </Link>
-
-      <CharacterSelectionCheckbox character={character} />
     </li>
   );
 }
