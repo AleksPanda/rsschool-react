@@ -1,5 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
+import ServerCharacterList from '@/components/CharacterList/CharacterList.server';
+import ServerPagination from '@/components/Pagination/Pagination.server';
 import { fetchCharacters } from '@/services/character-service';
 import type { CharacterResponse } from '@/types';
 import {
@@ -57,22 +59,25 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         }
       >
         <div className="results-layout__list">
-          <div
-            className={
-              hasLoadError
-                ? 'results-placeholder results-placeholder--error'
-                : 'results-placeholder'
-            }
-          >
-            <p>
-              {hasLoadError
-                ? t('loadError')
-                : t('loadedResults', {
-                    count: characterResponse?.results.length ?? 0,
-                    total: characterResponse?.info.count ?? 0,
-                  })}
-            </p>
-          </div>
+          {hasLoadError || !characterResponse ? (
+            <div className="results-placeholder results-placeholder--error">
+              <p>{t('loadError')}</p>
+            </div>
+          ) : (
+            <>
+              <ServerCharacterList
+                characters={characterResponse.results}
+                currentPage={currentPage}
+                searchTerm={searchTerm}
+              />
+
+              <ServerPagination
+                currentPage={currentPage}
+                totalPages={characterResponse.info.pages}
+                searchTerm={searchTerm}
+              />
+            </>
+          )}
         </div>
 
         {selectedCharacterId && (

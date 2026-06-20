@@ -9,6 +9,12 @@
     "courseSuffix": ".",
     "returnHome": "Вернуться на главную"
   },
+  "CharacterCard": {
+    "name": "Имя:",
+    "description": "Описание:",
+    "location": "Местоположение:",
+    "viewDetails": "Открыть информацию о персонаже {name}"
+  },
   "Header": {
     "title": "Поиск персонажей Рика и Морти",
     "description": "Ищите персонажей с помощью API Rick and Morty.",
@@ -19,7 +25,6 @@
     "title": "Результаты",
     "pageSummary": "Страница {page}",
     "searchSummary": "Результаты для «{searchTerm}», страница {page}",
-    "loadedResults": "Загружено персонажей: {count} из {total}.",
     "loadError": "Не удалось загрузить персонажей. Попробуйте ещё раз позже.",
     "detailsTitle": "Информация о персонаже",
     "selectedCharacter": "Персонаж №{id}"
@@ -32,6 +37,12 @@
     "description": "Страница, которую вы ищете, не существует.",
     "returnHome": "Вернуться на главную",
     "imageAlt": "Джерри Смит"
+  },
+  "Pagination": {
+    "label": "Пагинация",
+    "previous": "Назад",
+    "next": "Вперёд",
+    "status": "Страница {currentPage} из {totalPages}"
   },
   "ThemeToggle": {
     "light": "Светлая тема",

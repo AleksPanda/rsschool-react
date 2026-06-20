@@ -9,6 +9,12 @@
     "courseSuffix": ".",
     "returnHome": "Return to the main page"
   },
+  "CharacterCard": {
+    "name": "Name:",
+    "description": "Description:",
+    "location": "Location:",
+    "viewDetails": "View details for {name}"
+  },
   "Header": {
     "title": "Rick and Morty Character Search",
     "description": "Search for characters from the Rick and Morty API.",
@@ -19,7 +25,6 @@
     "title": "Results",
     "pageSummary": "Page {page}",
     "searchSummary": "Results for “{searchTerm}”, page {page}",
-    "loadedResults": "{count} of {total} characters loaded.",
     "loadError": "Unable to load characters. Please try again later.",
     "detailsTitle": "Character details",
     "selectedCharacter": "Character #{id}"
@@ -32,6 +37,12 @@
     "description": "The page you are looking for does not exist.",
     "returnHome": "Return to the main page",
     "imageAlt": "Jerry Smith"
+  },
+  "Pagination": {
+    "label": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "status": "Page {currentPage} of {totalPages}"
   },
   "ThemeToggle": {
     "light": "Light theme",
