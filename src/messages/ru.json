@@ -1,4 +1,14 @@
 {
+  "AboutPage": {
+    "title": "О проекте",
+    "intro": "Привет! Меня зовут Александра. Я frontend-разработчик и в основном работаю с React, TypeScript, JavaScript и современными инструментами frontend-разработки.",
+    "socialPrompt": "Мои профили",
+    "tagline": "Давайте создавать понятные и полезные приложения.",
+    "coursePrefix": "Это приложение создано в рамках",
+    "courseLink": "курса React от The Rolling Scopes School",
+    "courseSuffix": ".",
+    "returnHome": "Вернуться на главную"
+  },
   "Header": {
     "title": "Поиск персонажей Рика и Морти",
     "description": "Ищите персонажей с помощью API Rick and Morty.",

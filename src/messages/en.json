@@ -1,4 +1,14 @@
 {
+  "AboutPage": {
+    "title": "About",
+    "intro": "Hi! My name is Aleksandra. I am a frontend developer working mostly with React, TypeScript, JavaScript, and modern frontend tooling.",
+    "socialPrompt": "Find me online",
+    "tagline": "Let's build clean and useful applications.",
+    "coursePrefix": "This application was created as part of",
+    "courseLink": "The Rolling Scopes School React course",
+    "courseSuffix": ".",
+    "returnHome": "Return to the main page"
+  },
   "Header": {
     "title": "Rick and Morty Character Search",
     "description": "Search for characters from the Rick and Morty API.",
