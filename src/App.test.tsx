@@ -10,7 +10,7 @@ import ThemeProvider from './context/theme-provider';
 import type { CharacterResponse } from './types';
 import ErrorBoundary from './components/ErrorBoundary';
 
-vi.mock('./api/character-service', () => ({
+vi.mock('./services/character-service', () => ({
   fetchCharacters: vi.fn(),
 }));
 
@@ -63,7 +63,7 @@ describe('App URL state integration', () => {
   });
 
   it('loads characters with empty search term when localStorage is empty', async () => {
-    const { fetchCharacters } = await import('./api/character-service');
+    const { fetchCharacters } = await import('./services/character-service');
     vi.mocked(fetchCharacters).mockResolvedValueOnce(mockCharacterResponse);
 
     const { default: App } = await import('./App');
@@ -82,7 +82,7 @@ describe('App URL state integration', () => {
   });
 
   it('reads search term and page from URL params on mount', async () => {
-    const { fetchCharacters } = await import('./api/character-service');
+    const { fetchCharacters } = await import('./services/character-service');
     vi.mocked(fetchCharacters).mockResolvedValueOnce(mockCharacterResponse);
 
     const { default: App } = await import('./App');
@@ -103,7 +103,7 @@ describe('App URL state integration', () => {
   });
 
   it('shows an error message when initial request fails', async () => {
-    const { fetchCharacters } = await import('./api/character-service');
+    const { fetchCharacters } = await import('./services/character-service');
     vi.mocked(fetchCharacters).mockRejectedValueOnce(new Error('API error'));
 
     const { default: App } = await import('./App');
@@ -120,7 +120,7 @@ describe('App URL state integration', () => {
   it('applies search term from the form without saving it to localStorage', async () => {
     const user = userEvent.setup();
 
-    const { fetchCharacters } = await import('./api/character-service');
+    const { fetchCharacters } = await import('./services/character-service');
     vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
 
     const { default: App } = await import('./App');
@@ -149,7 +149,7 @@ describe('App URL state integration', () => {
   it('trims search term before searching', async () => {
     const user = userEvent.setup();
 
-    const { fetchCharacters } = await import('./api/character-service');
+    const { fetchCharacters } = await import('./services/character-service');
     vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
 
     const { default: App } = await import('./App');
@@ -179,7 +179,7 @@ describe('App URL state integration', () => {
     const user = userEvent.setup();
     const paginatedResponse = createPaginatedResponse();
 
-    const { fetchCharacters } = await import('./api/character-service');
+    const { fetchCharacters } = await import('./services/character-service');
     vi.mocked(fetchCharacters).mockResolvedValue(paginatedResponse);
 
     const { default: App } = await import('./App');
@@ -212,7 +212,7 @@ describe('App URL state integration', () => {
   it('refetches the current characters page after manual refresh', async () => {
     const user = userEvent.setup();
 
-    const { fetchCharacters } = await import('./api/character-service');
+    const { fetchCharacters } = await import('./services/character-service');
     vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
 
     const { default: App } = await import('./App');
@@ -233,7 +233,7 @@ describe('App URL state integration', () => {
     const user = userEvent.setup();
     vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    const { fetchCharacters } = await import('./api/character-service');
+    const { fetchCharacters } = await import('./services/character-service');
     vi.mocked(fetchCharacters).mockResolvedValue(mockCharacterResponse);
 
     const { default: App } = await import('./App');

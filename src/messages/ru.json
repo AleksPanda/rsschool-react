@@ -19,7 +19,8 @@
     "title": "Результаты",
     "pageSummary": "Страница {page}",
     "searchSummary": "Результаты для «{searchTerm}», страница {page}",
-    "emptyResults": "Персонажи не найдены.",
+    "loadedResults": "Загружено персонажей: {count} из {total}.",
+    "loadError": "Не удалось загрузить персонажей. Попробуйте ещё раз позже.",
     "detailsTitle": "Информация о персонаже",
     "selectedCharacter": "Персонаж №{id}"
   },

@@ -1,5 +1,5 @@
 import type { JSX } from 'react';
-import { fetchCharacterById } from '../../api/character-service';
+import { fetchCharacterById } from '../../services/character-service';
 import './CharacterDetails.scss';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { characterQueryKeys } from '../../api/query-keys';

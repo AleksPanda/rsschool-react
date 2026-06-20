@@ -19,7 +19,8 @@
     "title": "Results",
     "pageSummary": "Page {page}",
     "searchSummary": "Results for “{searchTerm}”, page {page}",
-    "emptyResults": "No character results.",
+    "loadedResults": "{count} of {total} characters loaded.",
+    "loadError": "Unable to load characters. Please try again later.",
     "detailsTitle": "Character details",
     "selectedCharacter": "Character #{id}"
   },

@@ -1,5 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 
+import { fetchCharacters } from '@/services/character-service';
+import type { CharacterResponse } from '@/types';
 import {
   getCharacterId,
   getPage,
@@ -18,6 +20,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const searchTerm = getSearchTerm(params);
   const selectedCharacterId = getCharacterId(params);
   const t = await getTranslations('HomePage');
+  let characterResponse: CharacterResponse | null = null;
+  let hasLoadError = false;
+
+  try {
+    characterResponse = await fetchCharacters(searchTerm, currentPage);
+  } catch {
+    hasLoadError = true;
+  }
 
   return (
     <section
@@ -25,6 +35,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       data-page={currentPage}
       data-search={searchTerm || undefined}
       data-details={selectedCharacterId ?? undefined}
+      data-result-count={characterResponse?.results.length ?? 0}
+      data-total-pages={characterResponse?.info.pages ?? 0}
     >
       <div className="app__section-header">
         <div>
@@ -45,8 +57,21 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         }
       >
         <div className="results-layout__list">
-          <div className="results-placeholder">
-            <p>{t('emptyResults')}</p>
+          <div
+            className={
+              hasLoadError
+                ? 'results-placeholder results-placeholder--error'
+                : 'results-placeholder'
+            }
+          >
+            <p>
+              {hasLoadError
+                ? t('loadError')
+                : t('loadedResults', {
+                    count: characterResponse?.results.length ?? 0,
+                    total: characterResponse?.info.count ?? 0,
+                  })}
+            </p>
           </div>
         </div>
 

@@ -3,11 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { RenderResult } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchCharacterById } from '../../api/character-service';
+import { fetchCharacterById } from '../../services/character-service';
 import { mockCharacter } from '../../test-utils/mock-character';
 import CharacterDetails from './CharacterDetails';
 
-vi.mock('../../api/character-service', () => ({
+vi.mock('../../services/character-service', () => ({
   fetchCharacterById: vi.fn(),
 }));
 

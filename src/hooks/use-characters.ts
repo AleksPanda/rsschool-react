@@ -1,4 +1,4 @@
-import { fetchCharacters } from '../api/character-service';
+import { fetchCharacters } from '../services/character-service';
 import type { Character } from '../types';
 import {
   keepPreviousData,
