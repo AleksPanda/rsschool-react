@@ -2,7 +2,6 @@
 
 import {
   useCallback,
-  useEffect,
   useMemo,
   useSyncExternalStore,
   type JSX,
@@ -47,10 +46,6 @@ function ThemeProvider({ children }: ThemeProviderProps): JSX.Element {
     () => DEFAULT_THEME
   );
 
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
-
   const toggleTheme = useCallback(() => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
 
@@ -67,7 +62,11 @@ function ThemeProvider({ children }: ThemeProviderProps): JSX.Element {
   );
 
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      <div className="theme-root" data-theme={theme}>
+        {children}
+      </div>
+    </ThemeContext.Provider>
   );
 }
 

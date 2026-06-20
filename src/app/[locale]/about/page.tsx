@@ -44,7 +44,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
           <div className="about-page__socials">
             {SOCIAL_LINKS.map(({ href, label, icon, iconClassName }) => (
-              <a
+              <Link
                 key={label}
                 className="about-page__social-link"
                 href={href}
@@ -64,7 +64,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   height={22}
                 />
                 <span>{label}</span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -73,14 +73,14 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
         <p className="about-page__text">
           {t('coursePrefix')}{' '}
-          <a
+          <Link
             className="about-page__course-link"
             href="https://rs.school/courses/reactjs"
             target="_blank"
             rel="noreferrer"
           >
             {t('courseLink')}
-          </a>
+          </Link>
           {t('courseSuffix')}
         </p>
 

@@ -21,18 +21,12 @@
   box-shadow: 0 12px 32px rgb(0 0 0 / 35%);
 }
 
-.selected-characters-panel__summary,
-.selected-characters-panel__error {
+.selected-characters-panel__summary {
   margin: 0;
 }
 
 .selected-characters-panel__summary {
   font-weight: 500;
-}
-
-.selected-characters-panel__error {
-  margin-top: var(--space-xs);
-  color: #ffb4b4;
 }
 
 .selected-characters-panel__actions {

@@ -109,19 +109,19 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             )}
           </div>
 
-          {selectedCharacterId && (
-            <aside
-              className="results-layout__details"
-              aria-label={t('detailsTitle')}
-            >
+          <aside
+            className="results-layout__details"
+            aria-label={t('detailsTitle')}
+          >
+            {selectedCharacterId && (
               <ServerCharacterDetails
                 character={selectedCharacter}
                 hasLoadError={hasDetailsLoadError}
                 currentPage={currentPage}
                 searchTerm={searchTerm}
               />
-            </aside>
-          )}
+            )}
+          </aside>
         </div>
       </section>
       <footer className="results-page__footer">

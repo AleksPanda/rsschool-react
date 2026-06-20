@@ -74,9 +74,7 @@
     "actionsLabel": "Selected characters actions",
     "selectedCount": "Selected characters: {count}",
     "unselectAll": "Unselect all",
-    "download": "Download",
-    "downloading": "Downloading...",
-    "error": "Unable to download CSV. Please try again."
+    "download": "Download"
   },
   "ThemeToggle": {
     "light": "Light theme",

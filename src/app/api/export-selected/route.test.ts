@@ -5,9 +5,11 @@ import { POST } from './route';
 
 describe('POST /api/export-selected', () => {
   it('returns selected characters as a CSV attachment', async () => {
+    const formData = new FormData();
+    formData.set('characters', JSON.stringify([mockCharacter]));
     const request = new Request('http://localhost/api/export-selected', {
       method: 'POST',
-      body: JSON.stringify([mockCharacter]),
+      body: formData,
     });
 
     const response = await POST(request);
@@ -26,9 +28,11 @@ describe('POST /api/export-selected', () => {
   });
 
   it('rejects an empty selection', async () => {
+    const formData = new FormData();
+    formData.set('characters', JSON.stringify([]));
     const request = new Request('http://localhost/api/export-selected', {
       method: 'POST',
-      body: JSON.stringify([]),
+      body: formData,
     });
 
     const response = await POST(request);
@@ -36,10 +40,12 @@ describe('POST /api/export-selected', () => {
     expect(response.status).toBe(400);
   });
 
-  it('rejects invalid JSON', async () => {
+  it('rejects invalid character data', async () => {
+    const formData = new FormData();
+    formData.set('characters', 'not-json');
     const request = new Request('http://localhost/api/export-selected', {
       method: 'POST',
-      body: 'not-json',
+      body: formData,
     });
 
     const response = await POST(request);

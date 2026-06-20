@@ -74,9 +74,7 @@
     "actionsLabel": "Действия с выбранными персонажами",
     "selectedCount": "Выбрано персонажей: {count}",
     "unselectAll": "Снять выбор",
-    "download": "Скачать",
-    "downloading": "Скачивание...",
-    "error": "Не удалось скачать CSV. Попробуйте ещё раз."
+    "download": "Скачать"
   },
   "ThemeToggle": {
     "light": "Светлая тема",

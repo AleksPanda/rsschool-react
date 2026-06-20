@@ -5,9 +5,12 @@ export async function POST(request: Request): Promise<Response> {
   let payload: unknown;
 
   try {
-    payload = await request.json();
+    const formData = await request.formData();
+    const characters = formData.get('characters');
+
+    payload = typeof characters === 'string' ? JSON.parse(characters) : null;
   } catch {
-    return Response.json({ error: 'Invalid JSON payload.' }, { status: 400 });
+    return Response.json({ error: 'Invalid character data.' }, { status: 400 });
   }
 
   if (!Array.isArray(payload) || payload.length === 0) {
