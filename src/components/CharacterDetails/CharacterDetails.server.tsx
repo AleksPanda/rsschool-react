@@ -4,6 +4,7 @@ import type { JSX } from 'react';
 
 import { Link } from '../../i18n/navigation';
 import type { Character } from '../../types';
+import RefreshButton from '../RefreshButton';
 import './CharacterDetails.scss';
 
 interface ServerCharacterDetailsProps {
@@ -50,7 +51,13 @@ export default async function ServerCharacterDetails({
 
   return (
     <article className="details-panel">
-      <div className="details-panel__actions details-panel__actions--server">
+      <div className="details-panel__actions">
+        <RefreshButton
+          label={t('refresh')}
+          pendingLabel={t('refreshing')}
+          className="details-panel__refresh-button"
+        />
+
         <Link
           className="details-panel__close-button"
           href={createCloseHref(currentPage, searchTerm)}

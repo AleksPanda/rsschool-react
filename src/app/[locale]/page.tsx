@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import ServerCharacterDetails from '@/components/CharacterDetails/CharacterDetails.server';
 import ServerCharacterList from '@/components/CharacterList/CharacterList.server';
 import ServerPagination from '@/components/Pagination/Pagination.server';
+import RefreshButton from '@/components/RefreshButton';
 import {
   fetchCharacterById,
   fetchCharacters,
@@ -15,6 +16,7 @@ import {
   type CharacterSearchParams,
 } from '@/utils/search-params';
 import './HomePage.scss';
+import TestErrorButton from './TestErrorButton';
 
 interface HomePageProps {
   searchParams: Promise<CharacterSearchParams>;
@@ -51,68 +53,72 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   }
 
   return (
-    <section
-      className="app__section"
-      data-page={currentPage}
-      data-search={searchTerm || undefined}
-      data-details={selectedCharacterId ?? undefined}
-      data-result-count={characterResponse?.results.length ?? 0}
-      data-total-pages={characterResponse?.info.pages ?? 0}
-    >
-      <div className="app__section-header">
-        <div>
-          <h2 className="app__section-title">{t('title')}</h2>
-          <p className="results-page__summary">
-            {searchTerm
-              ? t('searchSummary', { searchTerm, page: currentPage })
-              : t('pageSummary', { page: currentPage })}
-          </p>
-        </div>
-      </div>
-
-      <div
-        className={
-          selectedCharacterId
-            ? 'results-layout results-layout--with-details'
-            : 'results-layout'
-        }
+    <>
+      <section
+        className="app__section"
+        data-page={currentPage}
+        data-search={searchTerm || undefined}
+        data-details={selectedCharacterId ?? undefined}
+        data-result-count={characterResponse?.results.length ?? 0}
+        data-total-pages={characterResponse?.info.pages ?? 0}
       >
-        <div className="results-layout__list">
-          {hasLoadError || !characterResponse ? (
-            <div className="results-placeholder results-placeholder--error">
-              <p>{t('loadError')}</p>
-            </div>
-          ) : (
-            <>
-              <ServerCharacterList
-                characters={characterResponse.results}
-                currentPage={currentPage}
-                searchTerm={searchTerm}
-              />
+        <div className="app__section-header">
+          <h2 className="app__section-title">{t('title')}</h2>
 
-              <ServerPagination
+          <RefreshButton
+            label={t('refreshResults')}
+            pendingLabel={t('refreshingResults')}
+            className="results-layout__refresh-button"
+          />
+        </div>
+
+        <div
+          className={
+            selectedCharacterId
+              ? 'results-layout results-layout--with-details'
+              : 'results-layout'
+          }
+        >
+          <div className="results-layout__list">
+            {hasLoadError || !characterResponse ? (
+              <div className="results-placeholder results-placeholder--error">
+                <p>{t('loadError')}</p>
+              </div>
+            ) : (
+              <>
+                <ServerCharacterList
+                  characters={characterResponse.results}
+                  currentPage={currentPage}
+                  searchTerm={searchTerm}
+                />
+
+                <ServerPagination
+                  currentPage={currentPage}
+                  totalPages={characterResponse.info.pages}
+                  searchTerm={searchTerm}
+                />
+              </>
+            )}
+          </div>
+
+          {selectedCharacterId && (
+            <aside
+              className="results-layout__details"
+              aria-label={t('detailsTitle')}
+            >
+              <ServerCharacterDetails
+                character={selectedCharacter}
+                hasLoadError={hasDetailsLoadError}
                 currentPage={currentPage}
-                totalPages={characterResponse.info.pages}
                 searchTerm={searchTerm}
               />
-            </>
+            </aside>
           )}
         </div>
-
-        {selectedCharacterId && (
-          <aside
-            className="results-layout__details"
-            aria-label={t('detailsTitle')}
-          >
-            <ServerCharacterDetails
-              character={selectedCharacter}
-              hasLoadError={hasDetailsLoadError}
-              currentPage={currentPage}
-              searchTerm={searchTerm}
-            />
-          </aside>
-        )}
-      </div>
-    </section>
+      </section>
+      <footer className="results-page__footer">
+        <TestErrorButton label={t('testError')} />
+      </footer>
+    </>
   );
 }

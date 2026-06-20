@@ -17,6 +17,8 @@
   },
   "CharacterDetails": {
     "close": "Close details",
+    "refresh": "Refresh details",
+    "refreshing": "Refreshing details...",
     "loadError": "Unable to load character details. Please try again later.",
     "status": "Status",
     "species": "Species",
@@ -35,10 +37,16 @@
   },
   "HomePage": {
     "title": "Results",
-    "pageSummary": "Page {page}",
-    "searchSummary": "Results for “{searchTerm}”, page {page}",
     "loadError": "Unable to load characters. Please try again later.",
-    "detailsTitle": "Character details"
+    "detailsTitle": "Character details",
+    "refreshResults": "Refresh results",
+    "refreshingResults": "Refreshing results...",
+    "testError": "Test error boundary"
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred.",
+    "retry": "Try again"
   },
   "LanguageSwitcher": {
     "label": "Language"

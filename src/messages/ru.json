@@ -12,18 +12,20 @@
   "CharacterCard": {
     "name": "Имя:",
     "description": "Описание:",
-    "location": "Местоположение:",
+    "location": "Локация:",
     "viewDetails": "Открыть информацию о персонаже {name}"
   },
   "CharacterDetails": {
     "close": "Закрыть информацию о персонаже",
+    "refresh": "Обновить информацию",
+    "refreshing": "Обновление информации...",
     "loadError": "Не удалось загрузить информацию о персонаже. Попробуйте ещё раз позже.",
     "status": "Статус",
     "species": "Вид",
     "type": "Тип",
     "gender": "Пол",
     "origin": "Происхождение",
-    "location": "Местоположение",
+    "location": "Локация",
     "episodes": "Эпизоды",
     "episodeCount": "{count, plural, one {# эпизод} few {# эпизода} many {# эпизодов} other {# эпизода}}"
   },
@@ -35,10 +37,16 @@
   },
   "HomePage": {
     "title": "Результаты",
-    "pageSummary": "Страница {page}",
-    "searchSummary": "Результаты для «{searchTerm}», страница {page}",
     "loadError": "Не удалось загрузить персонажей. Попробуйте ещё раз позже.",
-    "detailsTitle": "Информация о персонаже"
+    "detailsTitle": "Информация о персонаже",
+    "refreshResults": "Обновить результаты",
+    "refreshingResults": "Обновление результатов...",
+    "testError": "Проверить обработку ошибки"
+  },
+  "ErrorPage": {
+    "title": "Что-то пошло не так",
+    "description": "Произошла непредвиденная ошибка.",
+    "retry": "Попробовать снова"
   },
   "LanguageSwitcher": {
     "label": "Язык"
