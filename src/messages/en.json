@@ -16,8 +16,12 @@
     "imageAlt": "Rick and Morty"
   },
   "HomePage": {
-    "title": "Character search",
-    "description": "The server-rendered character search will appear here."
+    "title": "Results",
+    "pageSummary": "Page {page}",
+    "searchSummary": "Results for “{searchTerm}”, page {page}",
+    "emptyResults": "No character results.",
+    "detailsTitle": "Character details",
+    "selectedCharacter": "Character #{id}"
   },
   "LanguageSwitcher": {
     "label": "Language"

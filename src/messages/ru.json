@@ -16,8 +16,12 @@
     "imageAlt": "Рик и Морти"
   },
   "HomePage": {
-    "title": "Поиск персонажей",
-    "description": "Здесь появится серверный поиск персонажей."
+    "title": "Результаты",
+    "pageSummary": "Страница {page}",
+    "searchSummary": "Результаты для «{searchTerm}», страница {page}",
+    "emptyResults": "Персонажи не найдены.",
+    "detailsTitle": "Информация о персонаже",
+    "selectedCharacter": "Персонаж №{id}"
   },
   "LanguageSwitcher": {
     "label": "Язык"
