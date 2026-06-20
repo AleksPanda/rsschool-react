@@ -15,6 +15,18 @@
     "location": "Местоположение:",
     "viewDetails": "Открыть информацию о персонаже {name}"
   },
+  "CharacterDetails": {
+    "close": "Закрыть информацию о персонаже",
+    "loadError": "Не удалось загрузить информацию о персонаже. Попробуйте ещё раз позже.",
+    "status": "Статус",
+    "species": "Вид",
+    "type": "Тип",
+    "gender": "Пол",
+    "origin": "Происхождение",
+    "location": "Местоположение",
+    "episodes": "Эпизоды",
+    "episodeCount": "{count, plural, one {# эпизод} few {# эпизода} many {# эпизодов} other {# эпизода}}"
+  },
   "Header": {
     "title": "Поиск персонажей Рика и Морти",
     "description": "Ищите персонажей с помощью API Rick and Morty.",
@@ -26,8 +38,7 @@
     "pageSummary": "Страница {page}",
     "searchSummary": "Результаты для «{searchTerm}», страница {page}",
     "loadError": "Не удалось загрузить персонажей. Попробуйте ещё раз позже.",
-    "detailsTitle": "Информация о персонаже",
-    "selectedCharacter": "Персонаж №{id}"
+    "detailsTitle": "Информация о персонаже"
   },
   "LanguageSwitcher": {
     "label": "Язык"

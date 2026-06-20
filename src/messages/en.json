@@ -15,6 +15,18 @@
     "location": "Location:",
     "viewDetails": "View details for {name}"
   },
+  "CharacterDetails": {
+    "close": "Close details",
+    "loadError": "Unable to load character details. Please try again later.",
+    "status": "Status",
+    "species": "Species",
+    "type": "Type",
+    "gender": "Gender",
+    "origin": "Origin",
+    "location": "Location",
+    "episodes": "Episodes",
+    "episodeCount": "{count, plural, one {# episode} other {# episodes}}"
+  },
   "Header": {
     "title": "Rick and Morty Character Search",
     "description": "Search for characters from the Rick and Morty API.",
@@ -26,8 +38,7 @@
     "pageSummary": "Page {page}",
     "searchSummary": "Results for “{searchTerm}”, page {page}",
     "loadError": "Unable to load characters. Please try again later.",
-    "detailsTitle": "Character details",
-    "selectedCharacter": "Character #{id}"
+    "detailsTitle": "Character details"
   },
   "LanguageSwitcher": {
     "label": "Language"

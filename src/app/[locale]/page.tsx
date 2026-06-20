@@ -1,9 +1,13 @@
 import { getTranslations } from 'next-intl/server';
 
+import ServerCharacterDetails from '@/components/CharacterDetails/CharacterDetails.server';
 import ServerCharacterList from '@/components/CharacterList/CharacterList.server';
 import ServerPagination from '@/components/Pagination/Pagination.server';
-import { fetchCharacters } from '@/services/character-service';
-import type { CharacterResponse } from '@/types';
+import {
+  fetchCharacterById,
+  fetchCharacters,
+} from '@/services/character-service';
+import type { Character, CharacterResponse } from '@/types';
 import {
   getCharacterId,
   getPage,
@@ -23,12 +27,27 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const selectedCharacterId = getCharacterId(params);
   const t = await getTranslations('HomePage');
   let characterResponse: CharacterResponse | null = null;
+  let selectedCharacter: Character | null = null;
   let hasLoadError = false;
+  let hasDetailsLoadError = false;
 
-  try {
-    characterResponse = await fetchCharacters(searchTerm, currentPage);
-  } catch {
+  const [charactersResult, detailsResult] = await Promise.allSettled([
+    fetchCharacters(searchTerm, currentPage),
+    selectedCharacterId
+      ? fetchCharacterById(selectedCharacterId)
+      : Promise.resolve(null),
+  ]);
+
+  if (charactersResult.status === 'fulfilled') {
+    characterResponse = charactersResult.value;
+  } else {
     hasLoadError = true;
+  }
+
+  if (detailsResult.status === 'fulfilled') {
+    selectedCharacter = detailsResult.value;
+  } else {
+    hasDetailsLoadError = true;
   }
 
   return (
@@ -82,13 +101,15 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
         {selectedCharacterId && (
           <aside
-            className="results-layout__details details-shell"
+            className="results-layout__details"
             aria-label={t('detailsTitle')}
           >
-            <h3 className="details-shell__title">{t('detailsTitle')}</h3>
-            <p className="details-shell__character">
-              {t('selectedCharacter', { id: selectedCharacterId })}
-            </p>
+            <ServerCharacterDetails
+              character={selectedCharacter}
+              hasLoadError={hasDetailsLoadError}
+              currentPage={currentPage}
+              searchTerm={searchTerm}
+            />
           </aside>
         )}
       </div>
